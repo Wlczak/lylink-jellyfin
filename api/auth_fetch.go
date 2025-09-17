@@ -70,8 +70,10 @@ func (api *Api) GetPlaybackInfo() {
 	fmt.Println(api.AccessToken)
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
-	body, response, _ := execRequest(request)
+	body, _, _ := execRequest(request)
 
-	fmt.Println(response.StatusCode)
-	fmt.Println(len(body), string(body))
+	var items []SessionItem
+	json.Unmarshal(body, &items)
+
+	fmt.Println(items)
 }
