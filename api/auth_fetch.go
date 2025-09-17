@@ -18,7 +18,7 @@ func newRequest(method string, url string, username string, body io.Reader) *htt
 
 	connectionName := "lylink_jellyfin"
 	if username != "" {
-		request.Header.Add("X-Emby-Authorization", "Emby UserId=\""+username+"\", Client=\""+connectionName+"\", Device=\""+connectionName+"\", DeviceId=\""+connectionName+"\", Version=\"1.0\", Token=\"\"")
+		request.Header.Add("X-Emby-Authorization", "Emby Client=\""+connectionName+"\", Device=\""+connectionName+"\", DeviceId=\""+connectionName+"\", Version=\"1.0\"")
 	}
 
 	return request
