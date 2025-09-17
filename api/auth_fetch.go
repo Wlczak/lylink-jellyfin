@@ -18,6 +18,8 @@ func newRequest(method string, url string, username string, body io.Reader) *htt
 
 	connectionName := "lylink_jellyfin"
 	if username != "" {
+		// Warning this is a very magic string, any alteration may break the auth process.
+		// You have beeen warned proceed with caution
 		request.Header.Add("X-Emby-Authorization", "Emby Client=\""+connectionName+"\", Device=\""+connectionName+"\", DeviceId=\""+connectionName+"\", Version=\"1.0\"")
 	}
 
