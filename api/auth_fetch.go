@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -10,12 +11,21 @@ import (
 
 func NewApi(username string, password string) (*Api, error) {
 
-	request_body := []byte("{\"username\":\"" + username + "\",\"Pw\":\"" + password + "\"}")
+	request_body, err := json.Marshal(map[string]string{
+		"username": username,
+		"Pw":       password,
+	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	request, _ := http.NewRequest("POST", "http://localhost:8096/Users/AuthenticateByName", bytes.NewReader(request_body))
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("X-Emby-Authorization", "Emby UserId=\"Hieroglyph.Admin\", Client=\"media_cleaner\", Device=\"media_cleaner\", DeviceId=\"media_cleaner\", Version=\"0.5\", Token=\"\"")
+
+	connectionName := "lylink_jellyfin"
+	request.Header.Add("X-Emby-Authorization", "Emby UserId=\""+username+"\", Client=\""+connectionName+"\", Device=\""+connectionName+"\", DeviceId=\""+connectionName+"\", Version=\"1.0\", Token=\"\"")
 
 	client := &http.Client{}
 	response, err := client.Do(request)
