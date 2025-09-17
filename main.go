@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/Wlczak/lylink-jellyfin/api"
 )
 
@@ -11,5 +9,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(api.AccessToken)
+	// fmt.Println(api.AccessToken)
+	api.GetPlaybackInfo()
 }

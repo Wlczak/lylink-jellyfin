@@ -1,6 +1,7 @@
 package api
 
 type Api struct {
+	Username    string
 	AccessToken string
 }
 

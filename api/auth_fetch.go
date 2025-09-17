@@ -9,10 +9,37 @@ import (
 	"net/http"
 )
 
+func newRequest(method string, url string, username string, body io.Reader) *http.Request {
+	request, _ := http.NewRequest(method, url, body)
+
+	if method == http.MethodPost {
+		request.Header.Add("Content-Type", "application/json")
+	}
+
+	connectionName := "lylink_jellyfin"
+	if username != "" {
+		request.Header.Add("X-Emby-Authorization", "Emby UserId=\""+username+"\", Client=\""+connectionName+"\", Device=\""+connectionName+"\", DeviceId=\""+connectionName+"\", Version=\"1.0\", Token=\"\"")
+	}
+
+	return request
+}
+
+func execRequest(request *http.Request) (body []byte, response *http.Response, err error) {
+	client := &http.Client{}
+	response, err = client.Do(request)
+	if err != nil {
+		fmt.Println(err)
+		return nil, nil, errors.New("request failed")
+	}
+
+	body, _ = io.ReadAll(response.Body)
+	return body, response, nil
+}
+
 func NewApi(username string, password string) (*Api, error) {
 
 	request_body, err := json.Marshal(map[string]string{
-		"username": username,
+		"Username": username,
 		"Pw":       password,
 	})
 
@@ -20,27 +47,12 @@ func NewApi(username string, password string) (*Api, error) {
 		return nil, err
 	}
 
-	request, _ := http.NewRequest("POST", "http://localhost:8096/Users/AuthenticateByName", bytes.NewReader(request_body))
+	request := newRequest(http.MethodPost, "http://localhost:8096/Users/AuthenticateByName", username, bytes.NewBuffer(request_body))
 
-	request.Header.Add("Content-Type", "application/json")
-
-	connectionName := "lylink_jellyfin"
-	request.Header.Add("X-Emby-Authorization", "Emby UserId=\""+username+"\", Client=\""+connectionName+"\", Device=\""+connectionName+"\", DeviceId=\""+connectionName+"\", Version=\"1.0\", Token=\"\"")
-
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		fmt.Println(err)
-		return nil, errors.New("request failed")
-	}
-
-	var body []byte
-
-	body, _ = io.ReadAll(response.Body)
+	body, _, err := execRequest(request)
 
 	//fmt.Println(string(body))
 
-	err = response.Body.Close()
 	if err != nil {
 		fmt.Println(err)
 		return nil, errors.New("request closure failed")
@@ -50,5 +62,16 @@ func NewApi(username string, password string) (*Api, error) {
 
 	err = json.Unmarshal(body, &authResponse)
 
-	return &Api{AccessToken: authResponse.AccessToken}, nil
+	return &Api{Username: username, AccessToken: authResponse.AccessToken}, nil
+}
+
+func (api *Api) GetPlaybackInfo() {
+	request := newRequest(http.MethodGet, "http://localhost:8096/Sessions", "", nil)
+	fmt.Println(api.AccessToken)
+	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
+
+	body, response, _ := execRequest(request)
+
+	fmt.Println(response.StatusCode)
+	fmt.Println(len(body), string(body))
 }
