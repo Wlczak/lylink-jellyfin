@@ -77,5 +77,17 @@ func (api *Api) GetPlaybackInfo() {
 	var items []SessionItem
 	json.Unmarshal(body, &items)
 
-	fmt.Println(items)
+	var activeItem SessionItem
+	var hasMediaPlaying = false
+	for _, item := range items {
+		if item.PlayState.MediaSourceId != "" {
+			activeItem = item
+			hasMediaPlaying = true
+		}
+	}
+
+	if hasMediaPlaying {
+		fmt.Println(activeItem.PlayState)
+	}
+
 }
