@@ -23,13 +23,18 @@ func NewApi(username string, password string) (*Api, error) {
 		fmt.Println(err)
 		return nil, errors.New("request failed")
 	}
-	defer response.Body.Close()
 
 	var body []byte
 
 	body, _ = io.ReadAll(response.Body)
 
 	fmt.Println(string(body))
+
+	err = response.Body.Close()
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("request closure failed")
+	}
 
 	return &Api{}, nil
 }
