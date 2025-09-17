@@ -10,7 +10,8 @@ type AuthResponse struct {
 }
 
 type SessionItem struct {
-	PlayState PlayState `json:"PlayState"`
+	PlayState      PlayState      `json:"PlayState"`
+	NowPlayingItem NowPlayingItem `json:"NowPlayingItem"`
 }
 
 type PlayState struct {
@@ -25,4 +26,8 @@ type PlayState struct {
 	PlayMethod          string `json:"PlayMethod"`
 	RepeatMode          string `json:"RepeatMode"`
 	PlaybackOrder       string `json:"PlaybackOrder"`
+}
+
+type NowPlayingItem struct {
+	RunTimeTicks int64 `json:"RunTimeTicks"`
 }

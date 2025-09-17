@@ -17,11 +17,12 @@ func main() {
 			return
 		}
 
-		item := api.GetPlaybackInfo()
+		item, _ := api.GetPlaybackInfo()
 
 		w.WriteHeader(http.StatusOK)
 
-		w.Write([]byte(fmt.Sprint(item.PlayState.PositionTicks)))
+		percentage := float64(item.PlayState.PositionTicks) / float64(item.NowPlayingItem.RunTimeTicks+1)
+		w.Write([]byte(fmt.Sprintf("%f", percentage*100)))
 	})
 
 	list, _ := net.Listen("tcp", ":8040")

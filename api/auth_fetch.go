@@ -67,7 +67,7 @@ func NewApi(username string, password string) (*Api, error) {
 	return &Api{Username: username, AccessToken: authResponse.AccessToken}, nil
 }
 
-func (api *Api) GetPlaybackInfo() SessionItem {
+func (api *Api) GetPlaybackInfo() (SessionItem, error) {
 	request := newRequest(http.MethodGet, "http://localhost:8096/Sessions", "", nil)
 	fmt.Println(api.AccessToken)
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
@@ -87,7 +87,8 @@ func (api *Api) GetPlaybackInfo() SessionItem {
 	}
 
 	if hasMediaPlaying {
-		fmt.Println(activeItem.PlayState)
+		return activeItem, nil
+
 	}
-	return activeItem
+	return activeItem, errors.New("no media playing")
 }
