@@ -53,8 +53,6 @@ func NewApi(username string, password string) (*Api, error) {
 
 	body, _, err := execRequest(request)
 
-	//fmt.Println(string(body))
-
 	if err != nil {
 		fmt.Println(err)
 		return nil, errors.New("request closure failed")
@@ -63,6 +61,10 @@ func NewApi(username string, password string) (*Api, error) {
 	var authResponse AuthResponse
 
 	err = json.Unmarshal(body, &authResponse)
+
+	if authResponse.AccessToken == "" {
+		return nil, errors.New("auth failed")
+	}
 
 	return &Api{Username: username, AccessToken: authResponse.AccessToken}, nil
 }
