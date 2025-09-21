@@ -19,6 +19,10 @@ func main() {
 
 		item, _ := api.GetPlaybackInfo()
 
+		w.Header().Set("Content-Type", "text/plain")
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		w.WriteHeader(http.StatusOK)
 
 		percentage := float64(item.PlayState.PositionTicks) / float64(item.NowPlayingItem.RunTimeTicks+1)
