@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -29,10 +28,11 @@ func newRequest(method string, url string, username string, body io.Reader) *htt
 }
 
 func execRequest(request *http.Request) (body []byte, response *http.Response, err error) {
+	zap := logs.GetLogger()
 	client := &http.Client{}
 	response, err = client.Do(request)
 	if err != nil {
-		fmt.Println(err)
+		zap.Error(err.Error())
 		return nil, nil, errors.New("request failed")
 	}
 
@@ -57,7 +57,7 @@ func GetToken(username string, password string) (*Api, error) {
 	body, _, err := execRequest(request)
 
 	if err != nil {
-		fmt.Println(err)
+		zap.Error(err.Error())
 		return nil, errors.New("request closure failed")
 	}
 
@@ -84,7 +84,6 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 	body, _, _ := execRequest(request)
 
 	var items []SessionItem
-	fmt.Println(string(body))
 	err := json.Unmarshal(body, &items)
 
 	if err != nil {
