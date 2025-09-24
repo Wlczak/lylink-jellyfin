@@ -36,7 +36,11 @@ func execRequest(request *http.Request) (body []byte, response *http.Response, e
 		return nil, nil, errors.New("request failed")
 	}
 
-	body, _ = io.ReadAll(response.Body)
+	body, err = io.ReadAll(response.Body)
+	if err != nil {
+		zap.Error(err.Error())
+		return nil, nil, errors.New("request closure failed")
+	}
 	return body, response, nil
 }
 
