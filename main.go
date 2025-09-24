@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/Wlczak/lylink-jellyfin/api"
+	"github.com/Wlczak/lylink-jellyfin/logs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,7 @@ type GetPlaybackInfoRequest struct {
 }
 
 func main() {
+	zap := logs.GetLogger()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
@@ -36,7 +38,11 @@ func main() {
 	r.POST("/getToken", func(c *gin.Context) {
 		bodyReader := c.Request.Body
 		defer bodyReader.Close()
-		body, _ := io.ReadAll(bodyReader)
+		body, err := io.ReadAll(bodyReader)
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		u := GetTokenRequest{}
 		json.Unmarshal(body, &u)
