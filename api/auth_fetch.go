@@ -58,7 +58,12 @@ func GetToken(username string, password string) (*Api, error) {
 
 	request := newRequest(http.MethodPost, "http://localhost:8096/Users/AuthenticateByName", username, bytes.NewBuffer(request_body))
 
-	body, _, err := execRequest(request)
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		zap.Error(err.Error())
+		return nil, errors.New("auth failed")
+	}
 
 	if err != nil {
 		zap.Error(err.Error())
@@ -87,7 +92,13 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
-	body, _, err := execRequest(request)
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		err = errors.New(response.Status)
+		zap.Error(err.Error())
+		return nil, err
+	}
 
 	if err != nil {
 		zap.Error(err.Error())
@@ -124,7 +135,13 @@ func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
-	body, _, err := execRequest(request)
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		err = errors.New(response.Status)
+		zap.Error(err.Error())
+		return MediaInfo{}, err
+	}
 
 	if err != nil {
 		zap.Error(err.Error())
