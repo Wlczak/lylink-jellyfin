@@ -17,7 +17,7 @@ type GetTokenRequest struct {
 }
 
 type GetPlaybackInfoRequest struct {
-	AccessToken string `json:"accessToken"`
+	AccessToken string `json:"token"`
 }
 
 func main() {
