@@ -37,15 +37,22 @@ func main() {
 
 	r.POST("/getToken", func(c *gin.Context) {
 		bodyReader := c.Request.Body
-		defer bodyReader.Close()
+
 		body, err := io.ReadAll(bodyReader)
+		err = bodyReader.Close()
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		if err != nil {
 			zap.Error(err.Error())
 		}
 
 		u := GetTokenRequest{}
-		json.Unmarshal(body, &u)
+		err = json.Unmarshal(body, &u)
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		api, err := api.GetToken(u.Username, u.Password)
 
@@ -59,15 +66,23 @@ func main() {
 
 	r.POST("/getPlaybackInfo", func(c *gin.Context) {
 		bodyReader := c.Request.Body
-		defer bodyReader.Close()
 		body, err := io.ReadAll(bodyReader)
 
 		if err != nil {
 			zap.Error(err.Error())
 		}
 
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
 		r := GetPlaybackInfoRequest{}
-		json.Unmarshal(body, &r)
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		api := api.NewApi(r.AccessToken)
 
@@ -81,5 +96,10 @@ func main() {
 	})
 
 	fmt.Println("Listening on port :8040")
-	r.Run(":8040")
+
+	err := r.Run(":8040")
+
+	if err != nil {
+		zap.Error(err.Error())
+	}
 }

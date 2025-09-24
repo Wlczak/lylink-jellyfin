@@ -85,7 +85,11 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 
 	var items []SessionItem
 	fmt.Println(string(body))
-	json.Unmarshal(body, &items)
+	err := json.Unmarshal(body, &items)
+
+	if err != nil {
+		return nil, err
+	}
 
 	var activeItems []SessionItem
 	var hasMediaPlaying = false
