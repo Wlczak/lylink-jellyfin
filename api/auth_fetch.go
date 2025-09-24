@@ -38,7 +38,7 @@ func execRequest(request *http.Request) (body []byte, response *http.Response, e
 	return body, response, nil
 }
 
-func NewApi(username string, password string) (*Api, error) {
+func GetToken(username string, password string) (*Api, error) {
 
 	request_body, err := json.Marshal(map[string]string{
 		"Username": username,
@@ -69,28 +69,33 @@ func NewApi(username string, password string) (*Api, error) {
 	return &Api{Username: username, AccessToken: authResponse.AccessToken}, nil
 }
 
-func (api *Api) GetPlaybackInfo() (SessionItem, error) {
+func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 	request := newRequest(http.MethodGet, "http://localhost:8096/Sessions", "", nil)
-	fmt.Println(api.AccessToken)
+
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
 	body, _, _ := execRequest(request)
 
 	var items []SessionItem
+	fmt.Println(string(body))
 	json.Unmarshal(body, &items)
 
-	var activeItem SessionItem
+	var activeItems []SessionItem
 	var hasMediaPlaying = false
 	for _, item := range items {
 		if item.PlayState.MediaSourceId != "" {
-			activeItem = item
+			activeItems = append(activeItems, item)
 			hasMediaPlaying = true
 		}
 	}
 
 	if hasMediaPlaying {
-		return activeItem, nil
+		return activeItems, nil
 
 	}
-	return activeItem, errors.New("no media playing")
+	return nil, errors.New("no media playing")
+}
+
+func NewApi(token string) *Api {
+	return &Api{AccessToken: token, Username: "guest"}
 }

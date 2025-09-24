@@ -15,12 +15,21 @@ type GetTokenRequest struct {
 	Password string `json:"password"`
 }
 
+type GetPlaybackInfoRequest struct {
+	AccessToken string `json:"accessToken"`
+}
+
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	r.GET("/handshake", func(c *gin.Context) {
+	r.Use(func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
+		c.Next()
+	})
+
+	r.GET("/handshake", func(c *gin.Context) {
+		// c.Header("Access-Control-Allow-Origin", "*")
 		c.String(http.StatusOK, "hand shaken")
 	})
 
@@ -32,10 +41,25 @@ func main() {
 		u := GetTokenRequest{}
 		json.Unmarshal(body, &u)
 
-		api, _ := api.NewApi(u.Username, u.Password)
+		api, _ := api.GetToken(u.Username, u.Password)
 
-		c.Header("Access-Control-Allow-Origin", "*")
+		// c.Header("Access-Control-Allow-Origin", "*")
 		c.String(http.StatusOK, api.AccessToken)
+	})
+
+	r.POST("/getPlaybackInfo", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		defer bodyReader.Close()
+		body, _ := io.ReadAll(bodyReader)
+
+		r := GetPlaybackInfoRequest{}
+		json.Unmarshal(body, &r)
+
+		api := api.NewApi(r.AccessToken)
+
+		sessions, _ := api.GetPlaybackInfo()
+
+		c.JSON(http.StatusOK, sessions)
 	})
 
 	fmt.Println("Listening on port :8040")
