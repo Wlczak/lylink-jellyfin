@@ -81,11 +81,18 @@ func GetToken(username string, password string) (*Api, error) {
 }
 
 func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
+	zap := logs.GetLogger()
+
 	request := newRequest(http.MethodGet, "http://localhost:8096/Sessions", "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
 	body, _, err := execRequest(request)
+
+	if err != nil {
+		zap.Error(err.Error())
+		return nil, err
+	}
 
 	var items []SessionItem
 	err = json.Unmarshal(body, &items)
@@ -111,11 +118,18 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 }
 
 func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
+	zap := logs.GetLogger()
+
 	request := newRequest(http.MethodGet, "http://localhost:8096/Item/"+mediaSourceId, "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
 	body, _, err := execRequest(request)
+
+	if err != nil {
+		zap.Error(err.Error())
+		return MediaInfo{}, err
+	}
 
 	var mediaInfo MediaInfo
 	err = json.Unmarshal(body, &mediaInfo)
