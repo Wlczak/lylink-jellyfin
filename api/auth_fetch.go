@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/Wlczak/lylink-jellyfin/logs"
 )
 
 func newRequest(method string, url string, username string, body io.Reader) *http.Request {
@@ -39,6 +41,7 @@ func execRequest(request *http.Request) (body []byte, response *http.Response, e
 }
 
 func GetToken(username string, password string) (*Api, error) {
+	zap := logs.GetLogger()
 
 	request_body, err := json.Marshal(map[string]string{
 		"Username": username,
@@ -61,6 +64,10 @@ func GetToken(username string, password string) (*Api, error) {
 	var authResponse AuthResponse
 
 	err = json.Unmarshal(body, &authResponse)
+
+	if err != nil {
+		zap.Error(err.Error())
+	}
 
 	if authResponse.AccessToken == "" {
 		return nil, errors.New("auth failed")

@@ -47,7 +47,11 @@ func main() {
 		u := GetTokenRequest{}
 		json.Unmarshal(body, &u)
 
-		api, _ := api.GetToken(u.Username, u.Password)
+		api, err := api.GetToken(u.Username, u.Password)
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		// c.Header("Access-Control-Allow-Origin", "*")
 		c.String(http.StatusOK, api.AccessToken)
@@ -56,14 +60,22 @@ func main() {
 	r.POST("/getPlaybackInfo", func(c *gin.Context) {
 		bodyReader := c.Request.Body
 		defer bodyReader.Close()
-		body, _ := io.ReadAll(bodyReader)
+		body, err := io.ReadAll(bodyReader)
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		r := GetPlaybackInfoRequest{}
 		json.Unmarshal(body, &r)
 
 		api := api.NewApi(r.AccessToken)
 
-		sessions, _ := api.GetPlaybackInfo()
+		sessions, err := api.GetPlaybackInfo()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
 
 		c.JSON(http.StatusOK, sessions)
 	})
