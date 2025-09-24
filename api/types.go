@@ -33,6 +33,9 @@ type NowPlayingItem struct {
 }
 
 type MediaInfo struct {
-	Name string `json:"Name"`
-	Type string `json:"Type"`
+	Name              string `json:"Name"`
+	Type              string `json:"Type"`
+	SeriesName        string `json:"SeriesName"`
+	IndexNumber       int    `json:"IndexNumber"`
+	ParentIndexNumber int    `json:"ParentIndexNumber"`
 }
