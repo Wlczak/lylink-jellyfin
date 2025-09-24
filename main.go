@@ -20,6 +20,10 @@ type GetPlaybackInfoRequest struct {
 	AccessToken string `json:"token"`
 }
 
+type GetMediaInfoRequest struct {
+	AccessToken string `json:"token"`
+}
+
 func main() {
 	zap := logs.GetLogger()
 	gin.SetMode(gin.ReleaseMode)
@@ -94,6 +98,35 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, sessions)
+	})
+
+	r.POST("/Item/:id", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		body, err := io.ReadAll(bodyReader)
+		mediaId := c.Param("id")
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		r := GetMediaInfoRequest{}
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		api := api.NewApi(r.AccessToken)
+
+		mediainfo, _ := api.GetMediaInfo(mediaId)
+
+		c.JSON(http.StatusOK, mediainfo)
+
 	})
 
 	fmt.Println("Listening on port :8040")

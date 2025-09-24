@@ -110,6 +110,22 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 	return nil, errors.New("no media playing")
 }
 
+func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
+	request := newRequest(http.MethodGet, "http://localhost:8096/Item/"+mediaSourceId, "", nil)
+
+	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
+
+	body, _, _ := execRequest(request)
+
+	var mediaInfo MediaInfo
+	err := json.Unmarshal(body, &mediaInfo)
+
+	if err != nil {
+		return MediaInfo{}, err
+	}
+	return mediaInfo, nil
+}
+
 func NewApi(token string) *Api {
 	return &Api{AccessToken: token, Username: "guest"}
 }

@@ -31,3 +31,8 @@ type PlayState struct {
 type NowPlayingItem struct {
 	RunTimeTicks int64 `json:"RunTimeTicks"`
 }
+
+type MediaInfo struct {
+	Name string `json:"Name"`
+	Type string `json:"Type"`
+}
