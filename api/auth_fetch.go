@@ -85,10 +85,10 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
-	body, _, _ := execRequest(request)
+	body, _, err := execRequest(request)
 
 	var items []SessionItem
-	err := json.Unmarshal(body, &items)
+	err = json.Unmarshal(body, &items)
 
 	if err != nil {
 		return nil, err
@@ -115,10 +115,10 @@ func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
-	body, _, _ := execRequest(request)
+	body, _, err := execRequest(request)
 
 	var mediaInfo MediaInfo
-	err := json.Unmarshal(body, &mediaInfo)
+	err = json.Unmarshal(body, &mediaInfo)
 
 	if err != nil {
 		return MediaInfo{}, err
