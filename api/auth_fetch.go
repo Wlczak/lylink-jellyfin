@@ -131,7 +131,7 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
 	zap := logs.GetLogger()
 
-	request := newRequest(http.MethodGet, "http://localhost:8096/Item/"+mediaSourceId, "", nil)
+	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
