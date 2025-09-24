@@ -39,10 +39,11 @@ func main() {
 		bodyReader := c.Request.Body
 
 		body, err := io.ReadAll(bodyReader)
-		err = bodyReader.Close()
 		if err != nil {
 			zap.Error(err.Error())
 		}
+
+		err = bodyReader.Close()
 
 		if err != nil {
 			zap.Error(err.Error())
