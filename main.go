@@ -133,7 +133,7 @@ func main() {
 
 		if err != nil {
 			zap.Error(err.Error())
-			c.Error(err)
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -147,7 +147,13 @@ func main() {
 		default:
 			err = errors.New("not correct type")
 			zap.Error(err.Error())
-			c.Error(err)
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -156,6 +162,12 @@ func main() {
 		case api.SeriesInfo:
 			response.SeasonId = seasInfo.Id
 			seriesInfo, err = apiObj.GetMediaInfo(seasInfo.Id)
+		}
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
+			return
 		}
 
 		switch serInfo := seriesInfo.(type) {
