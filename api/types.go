@@ -32,10 +32,40 @@ type NowPlayingItem struct {
 	RunTimeTicks int64 `json:"RunTimeTicks"`
 }
 
+type Media interface {
+}
+
 type MediaInfo struct {
+	Type string `json:"Type"`
+}
+
+type EpisodeInfo struct {
+	Id                string `json:"Id"`
 	Name              string `json:"Name"`
 	Type              string `json:"Type"`
 	SeriesName        string `json:"SeriesName"`
 	IndexNumber       int    `json:"IndexNumber"`
 	ParentIndexNumber int    `json:"ParentIndexNumber"`
+	ParentId          string `json:"ParentId"`
+}
+
+type SeasonInfo struct {
+	Id       string `json:"Id"`
+	ParentId string `json:"ParentId"`
+}
+
+type SeriesInfo struct {
+	Id       string `json:"Id"`
+	ParentId string `json:"ParentId"`
+}
+
+type GetMediaInfoResponse struct {
+	Id                string `json:"Id"`
+	Name              string `json:"Name"`
+	Type              string `json:"Type"`
+	SeriesName        string `json:"SeriesName"`
+	IndexNumber       int    `json:"IndexNumber"`
+	ParentIndexNumber int    `json:"ParentIndexNumber"`
+	SeasonId          string `json:"SeasonId"`
+	SeriesId          string `json:"SeriesId"`
 }

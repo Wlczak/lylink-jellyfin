@@ -128,7 +128,7 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 	return nil, errors.New("no media playing")
 }
 
-func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
+func (api *Api) GetMediaInfo(mediaSourceId string) (Media, error) {
 	zap := logs.GetLogger()
 
 	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
@@ -154,7 +154,31 @@ func (api *Api) GetMediaInfo(mediaSourceId string) (MediaInfo, error) {
 	if err != nil {
 		return MediaInfo{}, err
 	}
-	return mediaInfo, nil
+
+	if mediaInfo.Type == "" {
+		return MediaInfo{}, errors.New("no media info")
+	}
+	var info interface{}
+
+	switch mediaInfo.Type {
+	case "Episode":
+		info = EpisodeInfo{}
+		err = json.Unmarshal(body, &info)
+
+	case "Season":
+		info = SeasonInfo{}
+		err = json.Unmarshal(body, &info)
+
+	case "Series":
+		info = SeriesInfo{}
+		err = json.Unmarshal(body, &info)
+	}
+
+	if err != nil {
+		return MediaInfo{}, err
+	}
+
+	return info, nil
 }
 
 func NewApi(token string) *Api {
