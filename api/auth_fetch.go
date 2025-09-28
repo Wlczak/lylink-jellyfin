@@ -163,7 +163,6 @@ func (api *Api) GetEpisodeInfo(mediaSourceId string) (EpisodeInfo, error) {
 
 	switch mediaInfo.Type {
 	case "Episode":
-		zap.Info("episode")
 		info = EpisodeInfo{}
 		err = json.Unmarshal(body, &info)
 
@@ -175,6 +174,108 @@ func (api *Api) GetEpisodeInfo(mediaSourceId string) (EpisodeInfo, error) {
 
 	if err != nil {
 		return EpisodeInfo{}, err
+	}
+
+	return info, nil
+}
+
+func (api *Api) GetSeasonInfo(mediaSourceId string) (SeasonInfo, error) {
+	zap := logs.GetLogger()
+
+	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
+
+	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
+
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		err = errors.New(response.Status)
+		zap.Error(err.Error())
+		return SeasonInfo{}, err
+	}
+
+	if err != nil {
+		zap.Error(err.Error())
+		return SeasonInfo{}, err
+	}
+
+	var mediaInfo MediaInfo
+	err = json.Unmarshal(body, &mediaInfo)
+
+	if err != nil {
+		return SeasonInfo{}, err
+	}
+
+	if mediaInfo.Type == "" {
+		return SeasonInfo{}, errors.New("no media info")
+	}
+
+	var info SeasonInfo
+
+	switch mediaInfo.Type {
+	case "Season":
+		info = SeasonInfo{}
+		err = json.Unmarshal(body, &info)
+
+	default:
+		err = errors.New("media not Season type")
+		zap.Error(err.Error())
+		return SeasonInfo{}, err
+	}
+
+	if err != nil {
+		return SeasonInfo{}, err
+	}
+
+	return info, nil
+}
+
+func (api *Api) GetSeriesInfo(mediaSourceId string) (SeriesInfo, error) {
+	zap := logs.GetLogger()
+
+	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
+
+	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
+
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		err = errors.New(response.Status)
+		zap.Error(err.Error())
+		return SeriesInfo{}, err
+	}
+
+	if err != nil {
+		zap.Error(err.Error())
+		return SeriesInfo{}, err
+	}
+
+	var mediaInfo MediaInfo
+	err = json.Unmarshal(body, &mediaInfo)
+
+	if err != nil {
+		return SeriesInfo{}, err
+	}
+
+	if mediaInfo.Type == "" {
+		return SeriesInfo{}, errors.New("no media info")
+	}
+
+	var info SeriesInfo
+
+	switch mediaInfo.Type {
+	case "Series":
+		info = SeriesInfo{}
+		err = json.Unmarshal(body, &info)
+
+	default:
+		err = errors.New("media not Series type")
+		zap.Error(err.Error())
+		return SeriesInfo{}, err
+	}
+
+	if err != nil {
+		return SeriesInfo{}, err
 	}
 
 	return info, nil
