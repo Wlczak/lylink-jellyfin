@@ -128,7 +128,7 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 	return nil, errors.New("no media playing")
 }
 
-func (api *Api) GetMediaInfo(mediaSourceId string) (Media, error) {
+func (api *Api) GetEpisodeInfo(mediaSourceId string) (EpisodeInfo, error) {
 	zap := logs.GetLogger()
 
 	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
@@ -140,42 +140,41 @@ func (api *Api) GetMediaInfo(mediaSourceId string) (Media, error) {
 	if response.StatusCode != 200 {
 		err = errors.New(response.Status)
 		zap.Error(err.Error())
-		return MediaInfo{}, err
+		return EpisodeInfo{}, err
 	}
 
 	if err != nil {
 		zap.Error(err.Error())
-		return MediaInfo{}, err
+		return EpisodeInfo{}, err
 	}
 
 	var mediaInfo MediaInfo
 	err = json.Unmarshal(body, &mediaInfo)
 
 	if err != nil {
-		return MediaInfo{}, err
+		return EpisodeInfo{}, err
 	}
 
 	if mediaInfo.Type == "" {
-		return MediaInfo{}, errors.New("no media info")
+		return EpisodeInfo{}, errors.New("no media info")
 	}
-	var info interface{}
+
+	var info EpisodeInfo
 
 	switch mediaInfo.Type {
 	case "Episode":
+		zap.Info("episode")
 		info = EpisodeInfo{}
 		err = json.Unmarshal(body, &info)
 
-	case "Season":
-		info = SeasonInfo{}
-		err = json.Unmarshal(body, &info)
-
-	case "Series":
-		info = SeriesInfo{}
-		err = json.Unmarshal(body, &info)
+	default:
+		err = errors.New("media not episode type")
+		zap.Error(err.Error())
+		return EpisodeInfo{}, err
 	}
 
 	if err != nil {
-		return MediaInfo{}, err
+		return EpisodeInfo{}, err
 	}
 
 	return info, nil
