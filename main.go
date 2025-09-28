@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -129,7 +128,7 @@ func main() {
 
 		apiObj := api.NewApi(r.AccessToken)
 
-		episodeInfo, err := apiObj.GetMediaInfo(mediaId)
+		episodeInfo, err := apiObj.GetEpisodeInfo(mediaId)
 
 		if err != nil {
 			zap.Error(err.Error())
@@ -137,19 +136,10 @@ func main() {
 			return
 		}
 
-		var seasonInfo api.Media
 		var response api.GetMediaInfoResponse
 
-		switch epInfo := episodeInfo.(type) {
-		case api.EpisodeInfo:
-			seasonInfo, err = apiObj.GetMediaInfo(epInfo.ParentId)
-			response = api.GetMediaInfoResponse{Id: epInfo.Id, Name: epInfo.Name, Type: epInfo.Type, SeriesName: epInfo.SeriesName, IndexNumber: epInfo.IndexNumber, ParentIndexNumber: epInfo.ParentIndexNumber}
-		default:
-			err = errors.New("not correct type")
-			zap.Error(err.Error())
-			c.String(http.StatusBadRequest, err.Error())
-			return
-		}
+		seasonInfo, err := apiObj.GetSeasonInfo(episodeInfo.ParentId)
+		response = api.GetMediaInfoResponse{Id: episodeInfo.Id, Name: episodeInfo.Name, Type: episodeInfo.Type, SeriesName: episodeInfo.SeriesName, IndexNumber: episodeInfo.IndexNumber, ParentIndexNumber: episodeInfo.ParentIndexNumber}
 
 		if err != nil {
 			zap.Error(err.Error())
@@ -157,12 +147,8 @@ func main() {
 			return
 		}
 
-		var seriesInfo api.Media
-		switch seasInfo := seasonInfo.(type) {
-		case api.SeriesInfo:
-			response.SeasonId = seasInfo.Id
-			seriesInfo, err = apiObj.GetMediaInfo(seasInfo.Id)
-		}
+		response.SeasonId = seasonInfo.Id
+		seriesInfo, err := apiObj.GetSeriesInfo(seasonInfo.ParentId)
 
 		if err != nil {
 			zap.Error(err.Error())
@@ -170,10 +156,7 @@ func main() {
 			return
 		}
 
-		switch serInfo := seriesInfo.(type) {
-		case api.SeriesInfo:
-			response.SeriesId = serInfo.Id
-		}
+		response.SeriesId = seriesInfo.Id
 
 		c.JSON(http.StatusOK, response)
 	})
