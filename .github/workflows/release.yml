@@ -33,10 +33,12 @@ jobs:
                   go-version: ${{ matrix.go-version }}
             - run: mkdir -p out
             - run: |
+                  set -e
                   if [[ "${{ matrix.os }}" == "linux" ]]; then
                     sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
                   fi
             - run: |
+                  set -e
                   go install fyne.io/tools/cmd/fyne@latest
                   "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }}
               shell: bash
@@ -48,6 +50,7 @@ jobs:
             #       done
             #   shell: bash
             - run: |
+                  set -e
                   if [[ "${{ matrix.os }}" == "windows" ]]; then
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
                   fi
