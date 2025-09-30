@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"fyne.io/fyne/app"
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/logs"
 	"github.com/gin-gonic/gin"
@@ -25,7 +26,6 @@ type GetMediaInfoRequest struct {
 }
 
 func main() {
-	zap := logs.GetLogger()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
@@ -33,6 +33,18 @@ func main() {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Next()
 	})
+
+	setupRoutes(r)
+	go runHttpServer(r)
+
+	a := app.New()
+	w := a.NewWindow("lylink-jellyfin")
+	w.Show()
+	a.Run()
+}
+
+func setupRoutes(r *gin.Engine) {
+	zap := logs.GetLogger()
 
 	r.GET("/handshake", func(c *gin.Context) {
 		// c.Header("Access-Control-Allow-Origin", "*")
@@ -160,6 +172,10 @@ func main() {
 
 		c.JSON(http.StatusOK, response)
 	})
+}
+
+func runHttpServer(r *gin.Engine) {
+	zap := logs.GetLogger()
 
 	fmt.Println("Listening on port :8040")
 
