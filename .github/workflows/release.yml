@@ -52,7 +52,7 @@ jobs:
             - run: |
                   set -e
                   echo "${{ matrix.os }}"
-                  ls -l
+                  ls -lR
                   if [[ "${{ matrix.os }}" == "windows" ]]; then
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
                   fi
