@@ -50,10 +50,14 @@ jobs:
             - run: |
                   if [[ "${{ matrix.os }}" == "windows" ]]; then
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
-                  else
+                  fi
+                  if [[ "${{ matrix.os }}" == "linux" ]]; then
                     # tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
                     ls -l
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
+                  fi
+                  if [[ "${{ matrix.os }}" == "darwin" ]]; then
+                    mv lylink-jellyfin.app out/lylink-jellyfin-${{ matrix.os }}.app
                   fi
               shell: bash
             - uses: softprops/action-gh-release@v1
