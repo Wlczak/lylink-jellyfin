@@ -62,7 +62,7 @@ jobs:
                   if [[ "${{ matrix.os }}" == "darwin" ]]; then
                     ls -l
                     echo "${{ matrix.os }}"
-                    mv lylink-jellyfin.app out/lylink-jellyfin-${{ matrix.os }}.app
+                    mv lylink-jellyfin.app ./out/lylink-jellyfin-darwin.app
                   fi
               shell: bash
             - uses: softprops/action-gh-release@v2
