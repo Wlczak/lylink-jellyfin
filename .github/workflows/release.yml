@@ -61,7 +61,8 @@ jobs:
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
                   fi
                   if [[ "${{ matrix.os }}" == "darwin" ]]; then
-                    mv lylink-jellyfin.app ./out/lylink-jellyfin-darwin.app
+                    mkdir -p out
+                    zip -r out/lylink-jellyfin-darwin.zip lylink-jellyfin.app
                   fi
               shell: bash
             - uses: softprops/action-gh-release@v2
