@@ -54,7 +54,7 @@ jobs:
                   echo "${{ matrix.os }}"
                   ls -lR
                   if [[ "${{ matrix.os }}" == "windows" ]]; then
-                    mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
+                    mv  lylink-jellyfin.exe out/lylink-jellyfin-windows.exe
                   fi
                   if [[ "${{ matrix.os }}" == "linux" ]]; then
                     # tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
