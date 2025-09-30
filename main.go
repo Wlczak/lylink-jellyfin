@@ -6,7 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"fyne.io/fyne/app"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/widget"
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/logs"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,15 @@ type GetMediaInfoRequest struct {
 	AccessToken string `json:"token"`
 }
 
+func runApp() {
+	a := app.New()
+	w := a.NewWindow("lylink-jellyfin")
+	w.SetContent(widget.NewLabel("Hello"))
+
+	w.Show()
+	a.Run()
+}
+
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -37,10 +47,7 @@ func main() {
 	setupRoutes(r)
 	go runHttpServer(r)
 
-	a := app.New()
-	w := a.NewWindow("lylink-jellyfin")
-	w.Show()
-	a.Run()
+	runApp()
 }
 
 func setupRoutes(r *gin.Engine) {
