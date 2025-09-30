@@ -30,7 +30,6 @@ func runApp() {
 	a := app.New()
 	w := a.NewWindow("lylink-jellyfin")
 	w.SetContent(widget.NewLabel("Hello"))
-
 	w.Show()
 	a.Run()
 }
