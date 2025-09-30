@@ -30,9 +30,9 @@ jobs:
                   go-version: ${{ matrix.go-version }}
             - run: mkdir -p out
             - run: |
-                if [[ "${{ matrix.os }}" == "linux" ]]; then
-                  sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
-                fi
+                  if [[ "${{ matrix.os }}" == "linux" ]]; then
+                    sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+                  fi
             - run: |
                   go install fyne.io/tools/cmd/fyne@latest
                   "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }}
@@ -51,7 +51,8 @@ jobs:
                       zip -j "${f%.*}.zip" "$f" || true
                     done
                   else
-                    tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
+                    # tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
+                    mv lylink-jellyfin.tar.xz lylink-jellyfin-${{ matrix.os }}.tar.xz
                   fi
               shell: bash
             - uses: softprops/action-gh-release@v1
