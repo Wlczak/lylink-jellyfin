@@ -22,11 +22,6 @@ jobs:
                   go mod tidy
                   go mod verify
 
-            # - name: Get additional dependencies
-            #   run: |
-            #     sudo apt update
-            #     sudo apt install libgl1-mesa-dev
-
             - name: Get fyne dependencies
               run: |
                   sudo apt update
