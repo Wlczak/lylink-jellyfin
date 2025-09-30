@@ -24,7 +24,7 @@ jobs:
             - run: |
                   mkdir -p out
                   go install fyne.io/tools/cmd/fyne@latest
-                  fyne package -os {{ matrix.os }} -icon myapp.png
+                  fyne package -os {{ matrix.os }}
                   - run: |
                       if [[ "${{ matrix.os }}" == "windows" ]]; then
                         zip -j out/myapp-${{ matrix.os }}.zip out/myapp-${{ matrix.os }}
