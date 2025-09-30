@@ -60,6 +60,7 @@ jobs:
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
                   fi
                   if [[ "${{ matrix.os }}" == "darwin" ]]; then
+                    ls -l
                     mv lylink-jellyfin.app out/lylink-jellyfin-${{ matrix.os }}.app
                   fi
               shell: bash
