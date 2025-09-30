@@ -1,8 +1,16 @@
 package logs
 
-import "go.uber.org/zap"
+import (
+	"os"
+
+	"go.uber.org/zap"
+)
 
 func GetLogger() zap.Logger {
+	_, err := os.ReadDir("logs")
+	if err != nil {
+		os.Mkdir("logs", 0755)
+	}
 	cfg := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(zap.InfoLevel),
