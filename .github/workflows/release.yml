@@ -10,33 +10,46 @@ permissions:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
         strategy:
             matrix:
-                go-version: [1.25.1]
-                os: [linux, windows, darwin]
-                # arch: [amd64, arm64]
+                include:
+                    - go-version: "1.25.1"
+                      os: linux
+                      runs-on: ubuntu-latest
+                    - go-version: "1.25.1"
+                      os: windows
+                      runs-on: windows-latest
+                    - go-version: "1.25.1"
+                      os: darwin
+                      runs-on: macos-latest
+        runs-on: ${{ matrix.runs-on }}
         steps:
             - uses: actions/checkout@v5
             - uses: actions/setup-go@v6
               with:
                   go-version: ${{ matrix.go-version }}
+            - run: mkdir -p out
+            - run: |
+                  go install fyne.io/tools/cmd/fyne@latest
+                  "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }} -name myapp
+              shell: bash
             - run: |
                   mkdir -p out
-                  go install fyne.io/tools/cmd/fyne@latest
-                  fyne package -os {{ matrix.os }}
-                  - run: |
-                      if [[ "${{ matrix.os }}" == "windows" ]]; then
-                        zip -j out/myapp-${{ matrix.os }}.zip out/myapp-${{ matrix.os }}
-                      else
-                        tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out myapp-${{ matrix.os }}
-                      fi
-            #   - run: |
-            #       if [[ "${{ matrix.os }}" == "windows" ]]; then
-            #         zip -j out/myapp-${{ matrix.os }}-${{ matrix.arch }}.zip out/myapp-${{ matrix.os }}-${{ matrix.arch }}
-            #       else
-            #         tar -czf out/myapp-${{ matrix.os }}-${{ matrix.arch }}.tar.gz -C out myapp-${{ matrix.os }}-${{ matrix.arch }}
-            #       fi
+                  shopt -s nullglob || true
+                  for f in *myapp*; do
+                    mv "$f" out/ || true
+                  done
+              shell: bash
+            - run: |
+                  if [[ "${{ matrix.os }}" == "windows" ]]; then
+                    cd out
+                    for f in *; do
+                      zip -j "${f%.*}.zip" "$f" || true
+                    done
+                  else
+                    tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
+                  fi
+              shell: bash
             - uses: softprops/action-gh-release@v1
               with:
                   files: out/*
