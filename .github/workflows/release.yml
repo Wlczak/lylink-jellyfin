@@ -16,12 +16,12 @@ jobs:
                     - go-version: "1.25.1"
                       os: linux
                       runs-on: ubuntu-latest
-                    - go-version: "1.25.1"
-                      os: windows
-                      runs-on: windows-latest
-                    - go-version: "1.25.1"
-                      os: darwin
-                      runs-on: macos-latest
+                    # - go-version: "1.25.1"
+                    #   os: windows
+                    #   runs-on: windows-latest
+                    # - go-version: "1.25.1"
+                    #   os: darwin
+                    #   runs-on: macos-latest
         runs-on: ${{ matrix.runs-on }}
         steps:
             - uses: actions/checkout@v5
@@ -30,8 +30,12 @@ jobs:
                   go-version: ${{ matrix.go-version }}
             - run: mkdir -p out
             - run: |
+                if [[ "${{ matrix.os }}" == "linux" ]]; then
+                  sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+                fi
+            - run: |
                   go install fyne.io/tools/cmd/fyne@latest
-                  "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }} -name myapp
+                  "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }}
               shell: bash
             - run: |
                   mkdir -p out
