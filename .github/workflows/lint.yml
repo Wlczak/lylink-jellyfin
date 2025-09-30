@@ -22,10 +22,15 @@ jobs:
                   go mod tidy
                   go mod verify
 
-            - name: Get additional dependencies
+            # - name: Get additional dependencies
+            #   run: |
+            #     sudo apt update
+            #     sudo apt install libgl1-mesa-dev
+
+            - name: Get fyne dependencies
               run: |
-                sudo apt update
-                sudo apt install libgl1-mesa-dev
+                  sudo apt update
+                  sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
 
             - name: golangci-lint
               uses: golangci/golangci-lint-action@v8
