@@ -6,11 +6,12 @@ import (
 	"io"
 	"net/http"
 
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/widget"
 	"github.com/Wlczak/lylink-jellyfin/api"
+	"github.com/Wlczak/lylink-jellyfin/desktop"
 	"github.com/Wlczak/lylink-jellyfin/logs"
 	"github.com/gin-gonic/gin"
+
+	_ "embed"
 )
 
 type GetTokenRequest struct {
@@ -26,11 +27,12 @@ type GetMediaInfoRequest struct {
 	AccessToken string `json:"token"`
 }
 
+//go:embed Icon.png
+var icon []byte
+
 func runApp() {
-	a := app.New()
-	w := a.NewWindow("lylink-jellyfin")
-	w.SetContent(widget.NewLabel("Hello"))
-	w.Show()
+	a := desktop.Init(icon)
+
 	a.Run()
 }
 
