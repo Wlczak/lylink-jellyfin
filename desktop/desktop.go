@@ -100,7 +100,15 @@ func setupConfigWindow() {
 		}
 		config.Port = port
 		config.JellyfinServerUrl = serverUrl
-		config.Save()
+		err = config.Save()
+
+		if err != nil {
+			zap.Error(err.Error())
+			d := dialog.NewError(err, configWindow)
+			d.MinSize()
+			d.Show()
+			return
+		}
 		configWindow.Hide()
 	})
 

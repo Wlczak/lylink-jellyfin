@@ -20,6 +20,12 @@ func GetConfig() Config {
 
 	zap := logs.GetLogger()
 
+	_, err = os.Stat("config.json")
+
+	if os.IsNotExist(err) {
+		writeDefaultConfig()
+	}
+
 	fileContent, err = os.ReadFile("config.json")
 
 	if err != nil {
@@ -88,6 +94,12 @@ func writeDefaultConfig() []byte {
 
 func (c Config) Save() error {
 	zap := logs.GetLogger()
+
+	_, err := os.Stat("config.json")
+
+	if os.IsNotExist(err) {
+		writeDefaultConfig()
+	}
 
 	configFile, err := os.OpenFile("config.json", os.O_RDWR, 0644)
 
