@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/Wlczak/lylink-jellyfin/logs"
 )
 
 type Config struct {
@@ -14,6 +16,7 @@ type Config struct {
 func GetConfig() Config {
 	var fileContent []byte
 	var config Config
+	zap := logs.GetLogger()
 
 	configFile, err := os.OpenFile("config.json", os.O_CREATE, 0644)
 
@@ -23,6 +26,7 @@ func GetConfig() Config {
 
 	_, err = configFile.Read(fileContent)
 	if err != nil {
+		zap.Error(err.Error())
 		panic(err)
 	}
 
@@ -33,13 +37,23 @@ func GetConfig() Config {
 			JellyfinServerUrl: "",
 		})
 		if err != nil {
+			zap.Error(err.Error())
 			panic(err)
 		}
 
 		fmt.Println(string(defaultConfig))
 
-		configFile.WriteString(string(defaultConfig))
-		configFile.Close()
+		_, err = configFile.WriteString(string(defaultConfig))
+		if err != nil {
+			zap.Error(err.Error())
+			panic(err)
+		}
+
+		err = configFile.Close()
+		if err != nil {
+			zap.Error(err.Error())
+			panic(err)
+		}
 
 		fileContent = defaultConfig
 	}
@@ -47,7 +61,7 @@ func GetConfig() Config {
 	err = json.Unmarshal(fileContent, &config)
 
 	if err != nil {
-		fmt.Println(fileContent)
+		zap.Error(err.Error())
 		panic(err)
 	}
 
