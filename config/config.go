@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
 	"github.com/Wlczak/lylink-jellyfin/logs"
@@ -33,8 +32,6 @@ func GetConfig() Config {
 		panic(err)
 	}
 
-	fmt.Println(string(fileContent))
-
 	if len(fileContent) == 0 {
 		fileContent = writeDefaultConfig()
 	}
@@ -52,7 +49,7 @@ func GetConfig() Config {
 
 func writeDefaultConfig() []byte {
 	zap := logs.GetLogger()
-	fmt.Println("default")
+
 	defaultConfig, err := json.Marshal(Config{})
 	if err != nil {
 		zap.Error(err.Error())
