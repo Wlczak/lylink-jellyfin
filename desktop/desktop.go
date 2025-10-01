@@ -2,6 +2,7 @@ package desktop
 
 import (
 	"errors"
+	"fmt"
 	"net/url"
 	"strconv"
 
@@ -11,6 +12,7 @@ import (
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Wlczak/lylink-jellyfin/config"
 )
 
 var a fyne.App
@@ -40,15 +42,20 @@ func Init(icon []byte) fyne.App {
 }
 
 func setupConfigWindow() {
-	configWindow = a.NewWindow("Config")
+	config := config.GetConfig()
 
-	container := container.New(
+	configWindow = a.NewWindow("Config")
+	configWindow.SetCloseIntercept(func() {
+		configWindow.Hide()
+	})
+
+	form := container.New(
 		layout.NewFormLayout(),
 	)
-	container.Add(widget.NewLabel("Service port"))
+	form.Add(widget.NewLabel("Service port"))
 	portE := widget.NewEntry()
-	port := "8080"
-	portE.SetText(port)
+	port := config.Port
+	portE.SetText(fmt.Sprintf("%d", port))
 	portE.Validator = func(s string) error {
 		if s == "" {
 			return nil
@@ -61,12 +68,12 @@ func setupConfigWindow() {
 		}
 
 	}
-	container.Add(portE)
+	form.Add(portE)
 
-	container.Add(widget.NewLabel("Jellyfin server url"))
+	form.Add(widget.NewLabel("Jellyfin server url"))
 
 	serverUrlE := widget.NewEntry()
-	serverUrl := "http://localhost:8096"
+	serverUrl := config.JellyfinServerUrl
 	serverUrlE.Text = serverUrl
 	serverUrlE.Validator = func(s string) error {
 		if s == "" {
@@ -80,9 +87,20 @@ func setupConfigWindow() {
 		}
 
 	}
-	container.Add(serverUrlE)
+	form.Add(serverUrlE)
 
-	configWindow.SetContent(container)
+	submit := widget.NewButton("Submit", func() {
+
+	})
+
+	vbox := container.NewVBox(
+		form, submit)
+
+	configWindow.SetContent(vbox)
+
+	size := vbox.MinSize()
+	size.Width = 400
+	configWindow.Resize(size)
 
 	configWindow.Show()
 }
