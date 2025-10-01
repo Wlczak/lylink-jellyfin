@@ -87,7 +87,7 @@ func setupConfigWindow() {
 
 	submit := widget.NewButton("Submit", func() {
 		if portE.Validate() != nil || serverUrlE.Validate() != nil {
-			d := dialog.NewError(errors.New("Config is invalid"), configWindow)
+			d := dialog.NewError(errors.New("config is invalid"), configWindow)
 			d.MinSize()
 			d.Show()
 			return
