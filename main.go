@@ -7,8 +7,11 @@ import (
 	"net/http"
 
 	"github.com/Wlczak/lylink-jellyfin/api"
+	"github.com/Wlczak/lylink-jellyfin/desktop"
 	"github.com/Wlczak/lylink-jellyfin/logs"
 	"github.com/gin-gonic/gin"
+
+	_ "embed"
 )
 
 type GetTokenRequest struct {
@@ -24,8 +27,16 @@ type GetMediaInfoRequest struct {
 	AccessToken string `json:"token"`
 }
 
+//go:embed Icon.png
+var icon []byte
+
+func runApp() {
+	a := desktop.Init(icon)
+
+	a.Run()
+}
+
 func main() {
-	zap := logs.GetLogger()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
@@ -33,6 +44,15 @@ func main() {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Next()
 	})
+
+	setupRoutes(r)
+	go runHttpServer(r)
+
+	runApp()
+}
+
+func setupRoutes(r *gin.Engine) {
+	zap := logs.GetLogger()
 
 	r.GET("/handshake", func(c *gin.Context) {
 		// c.Header("Access-Control-Allow-Origin", "*")
@@ -160,6 +180,10 @@ func main() {
 
 		c.JSON(http.StatusOK, response)
 	})
+}
+
+func runHttpServer(r *gin.Engine) {
+	zap := logs.GetLogger()
 
 	fmt.Println("Listening on port :8040")
 

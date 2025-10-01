@@ -22,6 +22,11 @@ jobs:
                   go mod tidy
                   go mod verify
 
+            - name: Get fyne dependencies
+              run: |
+                  sudo apt update
+                  sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+
             - name: golangci-lint
               uses: golangci/golangci-lint-action@v8
               with:
