@@ -9,10 +9,12 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Wlczak/lylink-jellyfin/config"
+	"github.com/Wlczak/lylink-jellyfin/logs"
 )
 
 var a fyne.App
@@ -42,6 +44,7 @@ func Init(icon []byte) fyne.App {
 }
 
 func setupConfigWindow() {
+	zap := logs.GetLogger()
 	config := config.GetConfig()
 
 	configWindow = a.NewWindow("Config")
@@ -57,16 +60,11 @@ func setupConfigWindow() {
 	port := config.Port
 	portE.SetText(fmt.Sprintf("%d", port))
 	portE.Validator = func(s string) error {
-		if s == "" {
-			return nil
-		} else {
-			port, err := strconv.Atoi(s)
-			if port < 0 || port > 65535 {
-				err = errors.New("port must be between 0 and 65535")
-			}
-			return err
+		port, err := strconv.Atoi(s)
+		if port < 1 || port > 65535 {
+			err = errors.New("port must be between 0 and 65535")
 		}
-
+		return err
 	}
 	form.Add(portE)
 
@@ -76,30 +74,44 @@ func setupConfigWindow() {
 	serverUrl := config.JellyfinServerUrl
 	serverUrlE.Text = serverUrl
 	serverUrlE.Validator = func(s string) error {
-		if s == "" {
-			return nil
-		} else {
-			uri, err := url.ParseRequestURI(s)
-			if uri.Host == "" {
-				err = errors.New("invalid url")
-			}
-			return err
+		uri, err := url.ParseRequestURI(s)
+		if err != nil {
+			return errors.New("invalid url")
 		}
-
+		if uri.Host == "" {
+			err = errors.New("invalid url")
+		}
+		return err
 	}
 	form.Add(serverUrlE)
 
 	submit := widget.NewButton("Submit", func() {
-
+		if portE.Validate() != nil || serverUrlE.Validate() != nil {
+			d := dialog.NewError(errors.New("Config is invalid"), configWindow)
+			d.MinSize()
+			d.Show()
+			return
+		}
+		serverUrl = serverUrlE.Text
+		port, err := strconv.Atoi(portE.Text)
+		if err != nil {
+			port = 0
+			zap.Error(err.Error())
+		}
+		config.Port = port
+		config.JellyfinServerUrl = serverUrl
+		config.Save()
+		configWindow.Hide()
 	})
 
 	vbox := container.NewVBox(
-		form, submit)
+		form, layout.NewSpacer(), submit)
 
 	configWindow.SetContent(vbox)
 
 	size := vbox.MinSize()
-	size.Width = 400
+	size.Width = size.Width + 200
+	size.Height = size.Height + 100
 	configWindow.Resize(size)
 
 	configWindow.Show()
