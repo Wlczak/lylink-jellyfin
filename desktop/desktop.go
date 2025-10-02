@@ -144,6 +144,4 @@ func setupConfigWindow() {
 	size.Width = size.Width + 200
 	size.Height = size.Height + 100
 	configWindow.Resize(size)
-
-	configWindow.Show()
 }
