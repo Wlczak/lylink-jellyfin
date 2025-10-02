@@ -2,6 +2,8 @@ name: Build and release Go binaries
 
 on:
     push:
+        branches:
+            - "*"
         tags:
             - "v*"
 
@@ -31,6 +33,7 @@ jobs:
             - uses: actions/setup-go@v6
               with:
                   go-version: ${{ matrix.go-version }}
+                  cache: true
             - run: mkdir -p out
             - run: |
                   set -e
@@ -65,8 +68,8 @@ jobs:
                     zip -r out/lylink-jellyfin-darwin.zip lylink-jellyfin.app
                   fi
               shell: bash
-            - uses: softprops/action-gh-release@v2
-              with:
-                  files: out/*
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            # - uses: softprops/action-gh-release@v2
+            #   with:
+            #       files: out/*
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
