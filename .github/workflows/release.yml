@@ -18,12 +18,12 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - go-version: "1.25.1"
-                      os: linux
-                      runs-on: ubuntu-latest
-                    - go-version: "1.25.1"
-                      os: windows
-                      runs-on: windows-latest
+                    # - go-version: "1.25.1"
+                    #   os: linux
+                    #   runs-on: ubuntu-latest
+                    # - go-version: "1.25.1"
+                    #   os: windows
+                    #   runs-on: windows-latest
                     - go-version: "1.25.1"
                       os: darwin
                       runs-on: macos-latest
