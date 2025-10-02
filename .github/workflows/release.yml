@@ -2,8 +2,6 @@ name: Build and release Go binaries
 
 on:
     push:
-        branches:
-            - "*"
         tags:
             - "v*"
 
@@ -86,11 +84,11 @@ jobs:
                     zip -r out/lylink-jellyfin-darwin.zip lylink-jellyfin.app
                   fi
               shell: bash
-            # - uses: softprops/action-gh-release@v2
-            #   with:
-            #       files: out/*
-            #   env:
-            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - uses: softprops/action-gh-release@v2
+              with:
+                  files: out/*
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Save Go caches
               uses: actions/cache@v4
               with:
