@@ -42,9 +42,9 @@ jobs:
                   path: |
                       ${{ env.GOCACHE }}
                       ${{ env.GOMODCACHE }}
-                  key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
                   restore-keys: |
-                      ${{ runner.os }}-go-${{ matrix.go-version }}-
+                      ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
 
             - name: Make out dir
               run: mkdir -p out
@@ -95,4 +95,4 @@ jobs:
                   path: |
                       ${{ env.GOCACHE }}
                       ${{ env.GOMODCACHE }}
-                  key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ github.run_id }}
