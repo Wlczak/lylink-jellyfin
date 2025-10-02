@@ -1,11 +1,13 @@
 package desktop
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -14,6 +16,7 @@ import (
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/logs"
 	"github.com/gin-gonic/gin"
@@ -116,6 +119,19 @@ func setupConfigWindow() {
 			d.Show()
 			return
 		}
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+		server.Shutdown(ctx)
+
+		cancel()
+
+		server = &http.Server{
+			Addr:    fmt.Sprintf(":%d", port),
+			Handler: router,
+		}
+
+		go api.RunHttpServer(server)
+
 		configWindow.Hide()
 	})
 

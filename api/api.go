@@ -150,6 +150,5 @@ func RunHttpServer(r *http.Server) {
 
 	if err != nil {
 		zap.Error(err.Error())
-		panic(err)
 	}
 }
