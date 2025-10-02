@@ -31,13 +31,31 @@ jobs:
             - uses: actions/setup-go@v6
               with:
                   go-version: ${{ matrix.go-version }}
-            - run: mkdir -p out
-            - run: |
+                  cache: false
+            - name: Set GOCACHE and GOMODCACHE env
+              run: |
+                  echo "GOCACHE=$(go env GOCACHE)" >> $GITHUB_ENV
+                  echo "GOMODCACHE=$(go env GOMODCACHE)" >> $GITHUB_ENV
+            - name: Restore Go caches
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ${{ env.GOCACHE }}
+                      ${{ env.GOMODCACHE }}
+                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
+                  restore-keys: |
+                      ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
+
+            - name: Make out dir
+              run: mkdir -p out
+            - name: Get fyne dependencies for linux
+              run: |
                   set -e
                   if [[ "${{ matrix.os }}" == "linux" ]]; then
                     sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
                   fi
-            - run: |
+            - name: Get fyne && build && package
+              run: |
                   set -e
                   go install fyne.io/tools/cmd/fyne@latest
                   "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }}
@@ -49,7 +67,8 @@ jobs:
             #         mv "$f" out/ || true
             #       done
             #   shell: bash
-            - run: |
+            - name: Export binaries
+              run: |
                   set -e
                   echo "${{ matrix.os }}"
                   ls -lR
@@ -70,3 +89,10 @@ jobs:
                   files: out/*
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Save Go caches
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ${{ env.GOCACHE }}
+                      ${{ env.GOMODCACHE }}
+                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ github.run_id }}
