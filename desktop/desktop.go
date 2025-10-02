@@ -3,6 +3,7 @@ package desktop
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -15,12 +16,18 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/logs"
+	"github.com/gin-gonic/gin"
 )
 
 var a fyne.App
 var configWindow fyne.Window
+var router *gin.Engine
+var server *http.Server
 
-func Init(icon []byte) fyne.App {
+func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
+	router = r
+	server = srv
+
 	a = app.New()
 	setupConfigWindow()
 
