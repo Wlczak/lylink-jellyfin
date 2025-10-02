@@ -150,5 +150,11 @@ func RunHttpServer(r *http.Server) {
 
 	if err != nil {
 		zap.Error(err.Error())
+		if err.Error() == "http: Server closed" {
+			return
+		} else {
+			panic(err)
+		}
+
 	}
 }
