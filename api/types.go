@@ -69,3 +69,16 @@ type GetMediaInfoResponse struct {
 	SeasonId          string `json:"SeasonId"`
 	SeriesId          string `json:"SeriesId"`
 }
+
+type GetTokenRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type GetPlaybackInfoRequest struct {
+	AccessToken string `json:"token"`
+}
+
+type GetMediaInfoRequest struct {
+	AccessToken string `json:"token"`
+}

@@ -1,10 +1,13 @@
 package desktop
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -13,14 +16,21 @@ import (
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/logs"
+	"github.com/gin-gonic/gin"
 )
 
 var a fyne.App
 var configWindow fyne.Window
+var router *gin.Engine
+var server *http.Server
 
-func Init(icon []byte) fyne.App {
+func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
+	router = r
+	server = srv
+
 	a = app.New()
 	setupConfigWindow()
 
@@ -109,6 +119,23 @@ func setupConfigWindow() {
 			d.Show()
 			return
 		}
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+		err = server.Shutdown(ctx)
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		cancel()
+
+		server = &http.Server{
+			Addr:    fmt.Sprintf(":%d", port),
+			Handler: router,
+		}
+
+		go api.RunHttpServer(server)
+
 		configWindow.Hide()
 	})
 
@@ -121,6 +148,4 @@ func setupConfigWindow() {
 	size.Width = size.Width + 200
 	size.Height = size.Height + 100
 	configWindow.Resize(size)
-
-	configWindow.Show()
 }
