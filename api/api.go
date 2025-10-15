@@ -141,7 +141,7 @@ func SetupRoutes(r *gin.Engine) {
 
 		apiObj := NewApi(r.AccessToken)
 
-		seasonInfo, err := apiObj.GetSeriesInfo(mediaId)
+		seasonInfo, err := apiObj.GetSeasonInfo(mediaId)
 
 		if err != nil {
 			zap.Error(err.Error())
@@ -175,7 +175,7 @@ func SetupRoutes(r *gin.Engine) {
 
 		apiObj := NewApi(r.AccessToken)
 
-		episodeInfo, err := apiObj.GetSeriesInfo(mediaId)
+		episodeInfo, err := apiObj.GetEpisodeInfo(mediaId)
 
 		if err != nil {
 			zap.Error(err.Error())
