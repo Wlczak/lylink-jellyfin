@@ -59,7 +59,7 @@ type SeriesInfo struct {
 	ParentId string `json:"ParentId"`
 }
 
-type GetMediaInfoResponse struct {
+type GetEpisodeInfoWithParentsResponse struct {
 	Id                string `json:"Id"`
 	Name              string `json:"Name"`
 	Type              string `json:"Type"`

@@ -84,6 +84,108 @@ func SetupRoutes(r *gin.Engine) {
 		c.JSON(http.StatusOK, sessions)
 	})
 
+	r.POST("/Series/:id", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		body, err := io.ReadAll(bodyReader)
+		mediaId := c.Param("id")
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		r := GetMediaInfoRequest{}
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		apiObj := NewApi(r.AccessToken)
+
+		seriesInfo, err := apiObj.GetSeriesInfo(mediaId)
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, seriesInfo)
+	})
+
+	r.POST("/Season/:id", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		body, err := io.ReadAll(bodyReader)
+		mediaId := c.Param("id")
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		r := GetMediaInfoRequest{}
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		apiObj := NewApi(r.AccessToken)
+
+		seasonInfo, err := apiObj.GetSeriesInfo(mediaId)
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, seasonInfo)
+	})
+
+	r.POST("/Episode/:id", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		body, err := io.ReadAll(bodyReader)
+		mediaId := c.Param("id")
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		r := GetMediaInfoRequest{}
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		apiObj := NewApi(r.AccessToken)
+
+		episodeInfo, err := apiObj.GetSeriesInfo(mediaId)
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, episodeInfo)
+	})
+
 	r.POST("/Episode/WithParents/:id", func(c *gin.Context) {
 		bodyReader := c.Request.Body
 		body, err := io.ReadAll(bodyReader)
@@ -115,10 +217,10 @@ func SetupRoutes(r *gin.Engine) {
 			return
 		}
 
-		var response GetMediaInfoResponse
+		var response GetEpisodeInfoWithParentsResponse
 
 		seasonInfo, err := apiObj.GetSeasonInfo(episodeInfo.ParentId)
-		response = GetMediaInfoResponse{Id: episodeInfo.Id, Name: episodeInfo.Name, Type: episodeInfo.Type, SeriesName: episodeInfo.SeriesName, IndexNumber: episodeInfo.IndexNumber, ParentIndexNumber: episodeInfo.ParentIndexNumber}
+		response = GetEpisodeInfoWithParentsResponse{Id: episodeInfo.Id, Name: episodeInfo.Name, Type: episodeInfo.Type, SeriesName: episodeInfo.SeriesName, IndexNumber: episodeInfo.IndexNumber, ParentIndexNumber: episodeInfo.ParentIndexNumber}
 
 		if err != nil {
 			zap.Error(err.Error())
