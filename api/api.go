@@ -84,7 +84,7 @@ func SetupRoutes(r *gin.Engine) {
 		c.JSON(http.StatusOK, sessions)
 	})
 
-	r.POST("/Item/:id", func(c *gin.Context) {
+	r.POST("/Episode/WithParents/:id", func(c *gin.Context) {
 		bodyReader := c.Request.Body
 		body, err := io.ReadAll(bodyReader)
 		mediaId := c.Param("id")
