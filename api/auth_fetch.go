@@ -301,14 +301,18 @@ func (api *Api) GetEpisodeList(seriesId string) ([]EpisodeInfo, error) {
 		return []EpisodeInfo{}, err
 	}
 
-	var episodeList []EpisodeInfo
+	var episodeList EpisodeList
 	err = json.Unmarshal(body, &episodeList)
 
 	if err != nil {
 		return []EpisodeInfo{}, err
 	}
 
-	return episodeList, nil
+	if episodeList.Items == nil {
+		return []EpisodeInfo{}, errors.New("no media info")
+	}
+
+	return episodeList.Items, nil
 }
 
 func NewApi(token string) *Api {
