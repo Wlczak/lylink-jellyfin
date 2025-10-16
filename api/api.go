@@ -107,7 +107,7 @@ func SetupRoutes(r *gin.Engine) {
 
 		apiObj := NewApi(r.AccessToken)
 
-		seriesInfo, err := apiObj.GetSeriesInfo(mediaId)
+		seriesInfo, err := apiObj.GetEpisodeList(mediaId)
 
 		if err != nil {
 			zap.Error(err.Error())
