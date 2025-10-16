@@ -84,6 +84,40 @@ func SetupRoutes(r *gin.Engine) {
 		c.JSON(http.StatusOK, sessions)
 	})
 
+	r.POST("/Series/:id/ListSeasonsAndEpisodes", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		body, err := io.ReadAll(bodyReader)
+		mediaId := c.Param("id")
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		r := GetMediaInfoRequest{}
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		apiObj := NewApi(r.AccessToken)
+
+		seriesInfo, err := apiObj.GetSeriesInfo(mediaId)
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, seriesInfo)
+	})
+
 	r.POST("/Series/:id", func(c *gin.Context) {
 		bodyReader := c.Request.Body
 		body, err := io.ReadAll(bodyReader)
