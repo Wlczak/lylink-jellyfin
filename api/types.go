@@ -39,6 +39,10 @@ type MediaInfo struct {
 	Type string `json:"Type"`
 }
 
+type EpisodeList struct {
+	Items []EpisodeInfo `json:"Items"`
+}
+
 type EpisodeInfo struct {
 	Id                string `json:"Id"`
 	Name              string `json:"Name"`
@@ -59,7 +63,7 @@ type SeriesInfo struct {
 	ParentId string `json:"ParentId"`
 }
 
-type GetMediaInfoResponse struct {
+type GetEpisodeInfoWithParentsResponse struct {
 	Id                string `json:"Id"`
 	Name              string `json:"Name"`
 	Type              string `json:"Type"`

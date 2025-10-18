@@ -281,6 +281,40 @@ func (api *Api) GetSeriesInfo(mediaSourceId string) (SeriesInfo, error) {
 	return info, nil
 }
 
+func (api *Api) GetEpisodeList(seriesId string) ([]EpisodeInfo, error) {
+	zap := logs.GetLogger()
+
+	request := newRequest(http.MethodGet, "http://localhost:8096/Shows/"+seriesId+"/Episodes", "", nil)
+
+	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
+
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		err = errors.New(response.Status)
+		zap.Error(err.Error())
+		return []EpisodeInfo{}, err
+	}
+
+	if err != nil {
+		zap.Error(err.Error())
+		return []EpisodeInfo{}, err
+	}
+
+	var episodeList EpisodeList
+	err = json.Unmarshal(body, &episodeList)
+
+	if err != nil {
+		return []EpisodeInfo{}, err
+	}
+
+	if episodeList.Items == nil {
+		return []EpisodeInfo{}, errors.New("no media info")
+	}
+
+	return episodeList.Items, nil
+}
+
 func NewApi(token string) *Api {
 	return &Api{AccessToken: token, Username: "guest"}
 }
