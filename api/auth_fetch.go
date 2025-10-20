@@ -322,6 +322,30 @@ func (api *Api) GetEpisodeList(seriesId string) ([]EpisodeInfo, error) {
 	return episodeList.Items, nil
 }
 
+func (api *Api) GetItemImage(mediaId string, imageType string) ([]byte, string, error) {
+	zap := logs.GetLogger()
+	conf := config.GetConfig()
+
+	request := newRequest(http.MethodGet, conf.JellyfinServerUrl+"/Items/"+mediaId+"/Images/"+imageType, "", nil)
+
+	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
+
+	body, response, err := execRequest(request)
+
+	if response.StatusCode != 200 {
+		err = errors.New(response.Status)
+		zap.Error(err.Error())
+		return []byte{}, "", err
+	}
+
+	if err != nil {
+		zap.Error(err.Error())
+		return []byte{}, "", err
+	}
+
+	return body, response.Header.Get("Content-Type"), nil
+}
+
 func NewApi(token string) *Api {
 	return &Api{AccessToken: token, Username: "guest"}
 }
