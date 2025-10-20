@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/logs"
 )
 
@@ -46,6 +47,7 @@ func execRequest(request *http.Request) (body []byte, response *http.Response, e
 
 func GetToken(username string, password string) (*Api, error) {
 	zap := logs.GetLogger()
+	conf := config.GetConfig()
 
 	request_body, err := json.Marshal(map[string]string{
 		"Username": username,
@@ -56,7 +58,7 @@ func GetToken(username string, password string) (*Api, error) {
 		return nil, err
 	}
 
-	request := newRequest(http.MethodPost, "http://localhost:8096/Users/AuthenticateByName", username, bytes.NewBuffer(request_body))
+	request := newRequest(http.MethodPost, conf.JellyfinServerUrl+"/Users/AuthenticateByName", username, bytes.NewBuffer(request_body))
 
 	body, response, err := execRequest(request)
 
@@ -87,8 +89,9 @@ func GetToken(username string, password string) (*Api, error) {
 
 func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 	zap := logs.GetLogger()
+	conf := config.GetConfig()
 
-	request := newRequest(http.MethodGet, "http://localhost:8096/Sessions", "", nil)
+	request := newRequest(http.MethodGet, conf.JellyfinServerUrl+"/Sessions", "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
@@ -130,8 +133,9 @@ func (api *Api) GetPlaybackInfo() ([]SessionItem, error) {
 
 func (api *Api) GetEpisodeInfo(mediaSourceId string) (EpisodeInfo, error) {
 	zap := logs.GetLogger()
+	conf := config.GetConfig()
 
-	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
+	request := newRequest(http.MethodGet, conf.JellyfinServerUrl+"/Items/"+mediaSourceId, "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
@@ -181,8 +185,9 @@ func (api *Api) GetEpisodeInfo(mediaSourceId string) (EpisodeInfo, error) {
 
 func (api *Api) GetSeasonInfo(mediaSourceId string) (SeasonInfo, error) {
 	zap := logs.GetLogger()
+	conf := config.GetConfig()
 
-	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
+	request := newRequest(http.MethodGet, conf.JellyfinServerUrl+"/Items/"+mediaSourceId, "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
@@ -232,8 +237,9 @@ func (api *Api) GetSeasonInfo(mediaSourceId string) (SeasonInfo, error) {
 
 func (api *Api) GetSeriesInfo(mediaSourceId string) (SeriesInfo, error) {
 	zap := logs.GetLogger()
+	conf := config.GetConfig()
 
-	request := newRequest(http.MethodGet, "http://localhost:8096/Items/"+mediaSourceId, "", nil)
+	request := newRequest(http.MethodGet, conf.JellyfinServerUrl+"/Items/"+mediaSourceId, "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 
@@ -283,8 +289,9 @@ func (api *Api) GetSeriesInfo(mediaSourceId string) (SeriesInfo, error) {
 
 func (api *Api) GetEpisodeList(seriesId string) ([]EpisodeInfo, error) {
 	zap := logs.GetLogger()
+	conf := config.GetConfig()
 
-	request := newRequest(http.MethodGet, "http://localhost:8096/Shows/"+seriesId+"/Episodes", "", nil)
+	request := newRequest(http.MethodGet, conf.JellyfinServerUrl+"/Shows/"+seriesId+"/Episodes", "", nil)
 
 	request.Header.Set("Authorization", "MediaBrowser Token="+api.AccessToken)
 

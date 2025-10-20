@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -103,6 +104,7 @@ func setupConfigWindow() {
 			return
 		}
 		serverUrl = serverUrlE.Text
+		serverUrl = strings.TrimSuffix(serverUrl, "/")
 		port, err := strconv.Atoi(portE.Text)
 		if err != nil {
 			port = 0

@@ -50,7 +50,7 @@ func GetConfig() Config {
 func writeDefaultConfig() []byte {
 	zap := logs.GetLogger()
 
-	defaultConfig, err := json.Marshal(Config{})
+	defaultConfig, err := json.Marshal(Config{Port: 8040, JellyfinServerUrl: "http://localhost:8096"})
 	if err != nil {
 		zap.Error(err.Error())
 		panic(err)
