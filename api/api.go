@@ -274,7 +274,44 @@ func SetupRoutes(r *gin.Engine) {
 		response.SeriesId = seriesInfo.Id
 
 		c.JSON(http.StatusOK, response)
+
 	})
+	r.POST("/GetImage/:id/:type", func(c *gin.Context) {
+		bodyReader := c.Request.Body
+		body, err := io.ReadAll(bodyReader)
+		mediaId := c.Param("id")
+		imageType := c.Param("type")
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		err = bodyReader.Close()
+
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		r := GetMediaInfoRequest{}
+		err = json.Unmarshal(body, &r)
+		if err != nil {
+			zap.Error(err.Error())
+		}
+
+		apiObj := NewApi(r.AccessToken)
+
+		itemImage, contentType, err := apiObj.GetItemImage(mediaId, imageType)
+
+		if err != nil {
+			zap.Error(err.Error())
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// c.Header("Content-Type", contentType)
+		c.Data(http.StatusOK, contentType, itemImage)
+	})
+
 }
 
 func RunHttpServer(r *http.Server) {
