@@ -40,7 +40,7 @@ func main() {
 
 	api.SetupRoutes(r)
 
-	headless := flag.Bool("headless", true, "Run in headless mode without desktop GUI.")
+	headless := flag.Bool("headless", false, "Run in headless mode without desktop GUI.")
 	flag.Parse()
 
 	if *headless {
