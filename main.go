@@ -40,11 +40,9 @@ func main() {
 
 	api.SetupRoutes(r)
 
-	for _, arg := range os.Args {
-		if arg == "--headless" {
-			api.RunHttpServer(srv)
-			return
-		}
+	if hasHeadlessFlag(os.Args) {
+		api.RunHttpServer(srv)
+		return
 	}
 	go api.RunHttpServer(srv)
 	runApp(r, srv)
