@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
@@ -40,12 +40,14 @@ func main() {
 
 	api.SetupRoutes(r)
 
-	for _, arg := range os.Args {
-		if arg == "--headless" {
-			api.RunHttpServer(srv)
-			return
-		}
+	headless := flag.Bool("headless", true, "Run in headless mode without desktop GUI.")
+	flag.Parse()
+
+	if *headless {
+		api.RunHttpServer(srv)
+		return
 	}
+
 	go api.RunHttpServer(srv)
 	runApp(r, srv)
 }
