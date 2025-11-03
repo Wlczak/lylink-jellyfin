@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 
@@ -38,7 +39,15 @@ func main() {
 	}
 
 	api.SetupRoutes(r)
-	go api.RunHttpServer(srv)
 
+	headless := flag.Bool("headless", true, "Run in headless mode without desktop GUI.")
+	flag.Parse()
+
+	if *headless {
+		api.RunHttpServer(srv)
+		return
+	}
+
+	go api.RunHttpServer(srv)
 	runApp(r, srv)
 }
