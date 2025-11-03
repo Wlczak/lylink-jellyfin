@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
@@ -38,7 +39,13 @@ func main() {
 	}
 
 	api.SetupRoutes(r)
-	go api.RunHttpServer(srv)
 
+	for _, arg := range os.Args {
+		if arg == "--headless" {
+			api.RunHttpServer(srv)
+			return
+		}
+	}
+	go api.RunHttpServer(srv)
 	runApp(r, srv)
 }
