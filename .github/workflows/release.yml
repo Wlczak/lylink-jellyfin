@@ -16,13 +16,13 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - go-version: "1.25.3"
+                    - go-version: "1.25.5"
                       os: linux
                       runs-on: ubuntu-latest
-                    - go-version: "1.25.3"
+                    - go-version: "1.25.5"
                       os: windows
                       runs-on: windows-latest
-                    - go-version: "1.25.3"
+                    - go-version: "1.25.5"
                       os: darwin
                       runs-on: macos-latest
         runs-on: ${{ matrix.runs-on }}
