@@ -3,24 +3,24 @@ module github.com/Wlczak/lylink-jellyfin
 go 1.25.5
 
 require (
-	fyne.io/fyne/v2 v2.6.3
+	fyne.io/fyne/v2 v2.7.1
 	github.com/gin-gonic/gin v1.11.0
 	go.uber.org/zap v1.27.0
 )
 
 require (
-	fyne.io/systray v1.11.0 // indirect
-	github.com/BurntSushi/toml v1.4.0 // indirect
+	fyne.io/systray v1.11.1-0.20250603113521-ca66a66d8b58 // indirect
+	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/bytedance/sonic v1.14.0 // indirect
 	github.com/bytedance/sonic/loader v0.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.6 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fredbi/uri v1.1.0 // indirect
+	github.com/fredbi/uri v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fyne-io/gl-js v0.2.0 // indirect
 	github.com/fyne-io/glfw-js v0.3.0 // indirect
 	github.com/fyne-io/image v0.1.1 // indirect
-	github.com/fyne-io/oksvg v0.1.0 // indirect
+	github.com/fyne-io/oksvg v0.2.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71 // indirect
@@ -49,7 +49,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
 	github.com/quic-go/quic-go v0.54.0 // indirect
-	github.com/rymdport/portal v0.4.1 // indirect
+	github.com/rymdport/portal v0.4.2 // indirect
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
