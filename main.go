@@ -23,6 +23,20 @@ func runApp(r *gin.Engine, srv *http.Server) {
 }
 
 func main() {
+	headless := flag.Bool("headless", false, "Run in headless mode without desktop GUI.")
+	versionCheck := flag.Bool("version", false, "Check for updates and exit.")
+	flag.Parse()
+	if versionCheck != nil && *versionCheck {
+		hasUpdate, versionName, _ := desktop.HasUpdate()
+
+		if hasUpdate {
+			fmt.Println("New version " + versionName + " available")
+		} else {
+			fmt.Println("No updates available")
+		}
+		return
+	}
+
 	conf := config.GetConfig()
 
 	gin.SetMode(gin.ReleaseMode)
@@ -39,9 +53,6 @@ func main() {
 	}
 
 	api.SetupRoutes(r)
-
-	headless := flag.Bool("headless", false, "Run in headless mode without desktop GUI.")
-	flag.Parse()
 
 	if *headless {
 		api.RunHttpServer(srv)
