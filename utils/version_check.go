@@ -11,7 +11,6 @@ func HasUpdate() (bool, string, error) {
 	if err != nil {
 		return false, "", err
 	}
-	defer resp.Body.Close()
 	var release struct {
 		TagName string `json:"tag_name"`
 	}
@@ -19,6 +18,13 @@ func HasUpdate() (bool, string, error) {
 	if err != nil {
 		return false, "", err
 	}
+
+	err = resp.Body.Close()
+
+	if err != nil {
+		return false, "", err
+	}
+
 	bi, _ := debug.ReadBuildInfo()
 
 	return release.TagName != bi.Main.Version, release.TagName, nil
