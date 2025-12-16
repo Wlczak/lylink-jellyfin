@@ -41,7 +41,7 @@ jobs:
               run: |
                   set -e
                   go install fyne.io/tools/cmd/fyne@latest
-                  "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }}
+                  "$(go env GOPATH)/bin/fyne" package -os linux
               shell: bash
     build:
         needs: refresh-cache
