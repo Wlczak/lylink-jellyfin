@@ -47,11 +47,11 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 		aboutItem := fyne.NewMenuItem("About", func() {
 			aboutWindow = a.NewWindow("About")
 			l := container.NewVBox()
-			versionLabel := widget.NewLabel("lylink-jellyfin v0.0.1")
+			versionLabel := widget.NewLabel("Running lylink-jellyfin " + utils.GetCurrentVersion())
 
 			updateButton = widget.NewButton("Check for updates", func() {
 				updateButton.SetText("Checking...")
-				updateAvailable, newVersion, err := utils.HasUpdate()
+				updateAvailable, newVersion, _, err := utils.HasUpdate()
 
 				if err != nil {
 					a.SendNotification(&fyne.Notification{Title: "Error checking for updates"})
@@ -77,7 +77,7 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 
 	a.SendNotification(fyne.NewNotification("lylink-jellyfin", "LyLink is running in the background"))
 
-	updateAvailable, versionName, err := utils.HasUpdate()
+	updateAvailable, versionName, _, err := utils.HasUpdate()
 	if err != nil {
 		a.SendNotification(&fyne.Notification{Title: "Error checking for updates"})
 	}

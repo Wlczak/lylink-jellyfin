@@ -29,7 +29,7 @@ func main() {
 	versionCheckShort := flag.Bool("v", false, "Check for updates and exit.")
 	flag.Parse()
 	if versionCheck != nil && *versionCheck || versionCheckShort != nil && *versionCheckShort {
-		hasUpdate, versionName, err := utils.HasUpdate()
+		hasUpdate, newVersionName, currentVersionName, err := utils.HasUpdate()
 
 		if err != nil {
 			fmt.Println("Error checking for updates")
@@ -37,9 +37,10 @@ func main() {
 		}
 
 		if hasUpdate {
-			fmt.Println("New version " + versionName + " available")
+			fmt.Println("New version " + newVersionName + " available")
 		} else {
 			fmt.Println("No updates available")
+			fmt.Println("Running version " + currentVersionName)
 		}
 		return
 	}
