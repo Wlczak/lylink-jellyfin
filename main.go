@@ -26,8 +26,9 @@ func runApp(r *gin.Engine, srv *http.Server) {
 func main() {
 	headless := flag.Bool("headless", false, "Run in headless mode without desktop GUI.")
 	versionCheck := flag.Bool("version", false, "Check for updates and exit.")
+	versionCheckShort := flag.Bool("v", false, "Check for updates and exit.")
 	flag.Parse()
-	if versionCheck != nil && *versionCheck {
+	if versionCheck != nil && *versionCheck || versionCheckShort != nil && *versionCheckShort {
 		hasUpdate, versionName, err := utils.HasUpdate()
 
 		if err != nil {
