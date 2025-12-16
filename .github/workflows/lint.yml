@@ -8,14 +8,30 @@ on:
 
 jobs:
     build-and-test:
-        runs-on: ubuntu-latest
+        defaults:
+            run:
+                shell: bash
+        strategy:
+            matrix:
+                include:
+                    - go-version: "1.25.5"
+                      os: linux
+                      runs-on: ubuntu-latest
+                    - go-version: "1.25.5"
+                      os: windows
+                      runs-on: windows-latest
+                    - go-version: "1.25.5"
+                      os: darwin
+                      runs-on: macos-latest
+        runs-on: ${{ matrix.runs-on }}
         steps:
             - uses: actions/checkout@v5
-            
+
             - name: Set GOCACHE and GOMODCACHE env
               run: |
                   echo "GOCACHE=$(go env GOCACHE)" >> $GITHUB_ENV
                   echo "GOMODCACHE=$(go env GOMODCACHE)" >> $GITHUB_ENV
+
             - name: Restore Go caches
               uses: actions/cache@v4
               with:
@@ -29,7 +45,7 @@ jobs:
             - name: Set up Go
               uses: actions/setup-go@v6
               with:
-                  go-version: "1.25.5"
+                  go-version: ${{ matrix.go-version }}
 
             - name: Tidy modules
               run: |
@@ -37,6 +53,7 @@ jobs:
                   go mod verify
 
             - name: Get fyne dependencies
+              if: ${{ matrix.os == 'linux' }}
               run: |
                   sudo apt update
                   sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
@@ -59,17 +76,9 @@ jobs:
             - uses: dominikh/staticcheck-action@v1.4.0
               with:
                   version: "latest"
-            # - name: Staticcheck
-            #   run: staticcheck ./...
-
-            # - name: GolangCI-Lint
-            #   run: golangci-lint run
 
             - name: govulncheck
               uses: golang/govulncheck-action@v1
               with:
-                  go-version-input: 1.25.5
+                  go-version-input: ${{ matrix.go-version }}
                   go-package: ./...
-
-            # - name: Govulncheck
-            #   run: govulncheck ./...
