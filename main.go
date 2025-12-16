@@ -28,7 +28,7 @@ func main() {
 	versionCheck := flag.Bool("version", false, "Check for updates and exit.")
 	flag.Parse()
 	if versionCheck != nil && *versionCheck {
-		hasUpdate, versionName, _ := utils.HasUpdate()
+		hasUpdate, versionName, err := utils.HasUpdate()
 
 		if hasUpdate {
 			fmt.Println("New version " + versionName + " available")

@@ -12,7 +12,7 @@ import (
 )
 
 func newRequest(method string, url string, username string, body io.Reader) *http.Request {
-	request, _ := http.NewRequest(method, url, body)
+	request, err := http.NewRequest(method, url, body)
 
 	if method == http.MethodPost {
 		request.Header.Add("Content-Type", "application/json")

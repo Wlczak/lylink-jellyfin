@@ -25,7 +25,7 @@ func HasUpdate() (bool, string, error) {
 		return false, "", err
 	}
 
-	bi, _ := debug.ReadBuildInfo()
+	bi, ok := debug.ReadBuildInfo()
 
 	return release.TagName != bi.Main.Version, release.TagName, nil
 }

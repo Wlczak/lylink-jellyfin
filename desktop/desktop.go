@@ -51,7 +51,7 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 
 			updateButton = widget.NewButton("Check for updates", func() {
 				updateButton.SetText("Checking...")
-				updateAvailable, newVersion, _ := utils.HasUpdate()
+				updateAvailable, newVersion, err := utils.HasUpdate()
 				if updateAvailable {
 					a.SendNotification(&fyne.Notification{Title: "New version " + newVersion + " available"})
 				}
@@ -73,7 +73,7 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 
 	a.SendNotification(fyne.NewNotification("lylink-jellyfin", "LyLink is running in the background"))
 
-	updateAvailable, versionName, _ := utils.HasUpdate()
+	updateAvailable, versionName, err := utils.HasUpdate()
 	if updateAvailable {
 		a.SendNotification(&fyne.Notification{Title: "New version " + versionName + " available"})
 	}
