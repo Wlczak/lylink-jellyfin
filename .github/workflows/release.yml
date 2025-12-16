@@ -33,10 +33,8 @@ jobs:
             - name: Get fyne dependencies for linux
               run: |
                   set -e
-                  if [[ "${{ matrix.os }}" == "linux" ]]; then
-                    sudo apt-get update
-                    sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
-                  fi
+                  sudo apt-get update
+                  sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
             - name: Make cache
               run: |
                   set -e
