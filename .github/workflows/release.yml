@@ -37,8 +37,12 @@ jobs:
                     sudo apt-get update
                     sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
                   fi
-            - name: Make build cache
-              run: go build .
+            - name: Make cache
+              run: |
+                  set -e
+                  go install fyne.io/tools/cmd/fyne@latest
+                  "$(go env GOPATH)/bin/fyne" package -os ${{ matrix.os }}
+              shell: bash
     build:
         needs: refresh-cache
         defaults:
