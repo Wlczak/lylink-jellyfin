@@ -36,10 +36,11 @@ jobs:
                   go mod tidy
                   go mod verify
 
-            - name: Get fyne dependencies
+            - name: Get fyne dependencies && fyne
               run: |
                   sudo apt update
                   sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+                  go install fyne.io/tools/cmd/fyne@latest
 
             - name: golangci-lint
               uses: golangci/golangci-lint-action@v8
