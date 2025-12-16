@@ -27,6 +27,11 @@ jobs:
         steps:
             - uses: actions/checkout@v5
 
+            - name: Set up Go
+              uses: actions/setup-go@v6
+              with:
+                  go-version: ${{ matrix.go-version }}
+
             - name: Set GOCACHE and GOMODCACHE env
               run: |
                   echo "GOCACHE=$(go env GOCACHE)" >> $GITHUB_ENV
