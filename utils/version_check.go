@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"runtime/debug"
 )
@@ -26,6 +27,10 @@ func HasUpdate() (bool, string, error) {
 	}
 
 	bi, ok := debug.ReadBuildInfo()
+
+	if !ok {
+		return false, "", errors.New("failed to read build info")
+	}
 
 	return release.TagName != bi.Main.Version, release.TagName, nil
 }

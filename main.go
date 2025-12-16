@@ -30,6 +30,11 @@ func main() {
 	if versionCheck != nil && *versionCheck {
 		hasUpdate, versionName, err := utils.HasUpdate()
 
+		if err != nil {
+			fmt.Println("Error checking for updates")
+			return
+		}
+
 		if hasUpdate {
 			fmt.Println("New version " + versionName + " available")
 		} else {
