@@ -38,6 +38,10 @@ jobs:
                   echo "GOMODCACHE=$(go env GOMODCACHE)" >> $GITHUB_ENV
             - name: Restore Go caches
               uses: actions/cache@v4
+              ## Lie to github
+              env:
+                GITHUB_REF: refs/heads/main
+
               with:
                   path: |
                       ${{ env.GOCACHE }}
