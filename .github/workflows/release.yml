@@ -30,9 +30,17 @@ jobs:
                   key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
                   restore-keys: |
                       ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
+            - name: Get fyne dependencies for linux
+              run: |
+                  set -e
+                  if [[ "${{ matrix.os }}" == "linux" ]]; then
+                    sudo apt-get update
+                    sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+                  fi
             - name: Make build cache
               run: go build .
     build:
+        needs: refresh-cache
         defaults:
             run:
                 shell: bash
