@@ -8,6 +8,7 @@ import (
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/desktop"
+	"github.com/Wlczak/lylink-jellyfin/utils"
 	"github.com/gin-gonic/gin"
 
 	_ "embed"
@@ -27,7 +28,7 @@ func main() {
 	versionCheck := flag.Bool("version", false, "Check for updates and exit.")
 	flag.Parse()
 	if versionCheck != nil && *versionCheck {
-		hasUpdate, versionName, _ := desktop.HasUpdate()
+		hasUpdate, versionName, _ := utils.HasUpdate()
 
 		if hasUpdate {
 			fmt.Println("New version " + versionName + " available")

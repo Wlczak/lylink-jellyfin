@@ -2,7 +2,6 @@ package desktop
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -21,6 +20,7 @@ import (
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/logs"
+	"github.com/Wlczak/lylink-jellyfin/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -51,7 +51,7 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 
 			updateButton = widget.NewButton("Check for updates", func() {
 				updateButton.SetText("Checking...")
-				updateAvailable, newVersion, _ := HasUpdate()
+				updateAvailable, newVersion, _ := utils.HasUpdate()
 				if updateAvailable {
 					a.SendNotification(&fyne.Notification{Title: "New version " + newVersion + " available"})
 				}
@@ -73,7 +73,7 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 
 	a.SendNotification(fyne.NewNotification("lylink-jellyfin", "LyLink is running in the background"))
 
-	updateAvailable, versionName, _ := HasUpdate()
+	updateAvailable, versionName, _ := utils.HasUpdate()
 	if updateAvailable {
 		a.SendNotification(&fyne.Notification{Title: "New version " + versionName + " available"})
 	}
@@ -177,20 +177,4 @@ func setupConfigWindow() {
 	size.Width = size.Width + 200
 	size.Height = size.Height + 100
 	configWindow.Resize(size)
-}
-
-func HasUpdate() (bool, string, error) {
-	resp, err := http.Get("https://api.github.com/repos/wlczak/lylink-jellyfin/releases/latest")
-	if err != nil {
-		return false, "", err
-	}
-	defer resp.Body.Close()
-	var release struct {
-		TagName string `json:"tag_name"`
-	}
-	err = json.NewDecoder(resp.Body).Decode(&release)
-	if err != nil {
-		return false, "", err
-	}
-	return release.TagName != "v0.0.1", release.TagName, nil
 }
