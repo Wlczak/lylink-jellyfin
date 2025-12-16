@@ -2,6 +2,7 @@ package desktop
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -27,6 +28,8 @@ var a fyne.App
 var configWindow fyne.Window
 var router *gin.Engine
 var server *http.Server
+var aboutWindow fyne.Window
+var updateButton *widget.Button
 
 func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 	router = r
@@ -41,15 +44,39 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 		showItem := fyne.NewMenuItem("Config", func() {
 			configWindow.Show()
 		})
+		aboutItem := fyne.NewMenuItem("About", func() {
+			aboutWindow = a.NewWindow("About")
+			l := container.NewVBox()
+			versionLabel := widget.NewLabel("lylink-jellyfin v0.0.1")
+
+			updateButton = widget.NewButton("Check for updates", func() {
+				updateButton.SetText("Checking...")
+				updateAvailable, newVersion, _ := hasUpdate()
+				if updateAvailable {
+					a.SendNotification(&fyne.Notification{Title: "New version " + newVersion + " available"})
+				}
+				updateButton.SetText("Check for updates")
+			})
+
+			l.Add(versionLabel)
+			l.Add(updateButton)
+			aboutWindow.SetContent(l)
+			aboutWindow.Show()
+		})
 		quitItem := fyne.NewMenuItem("Quit", func() {
 			a.Quit()
 		})
-		m := fyne.NewMenu("MyApp", showItem, quitItem)
+		m := fyne.NewMenu("MyApp", showItem, aboutItem, quitItem)
 		desk.SetSystemTrayMenu(m)
 		desk.SetSystemTrayIcon(a.Icon())
 	}
 
 	a.SendNotification(fyne.NewNotification("lylink-jellyfin", "LyLink is running in the background"))
+
+	updateAvailable, versionName, _ := hasUpdate()
+	if updateAvailable {
+		a.SendNotification(&fyne.Notification{Title: "New version " + versionName + " available"})
+	}
 
 	return a
 }
@@ -150,4 +177,20 @@ func setupConfigWindow() {
 	size.Width = size.Width + 200
 	size.Height = size.Height + 100
 	configWindow.Resize(size)
+}
+
+func hasUpdate() (bool, string, error) {
+	resp, err := http.Get("https://api.github.com/repos/wlczak/lylink-jellyfin/releases/latest")
+	if err != nil {
+		return false, "", err
+	}
+	defer resp.Body.Close()
+	var release struct {
+		TagName string `json:"tag_name"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&release)
+	if err != nil {
+		return false, "", err
+	}
+	return release.TagName != "v0.0.1", release.TagName, nil
 }
