@@ -317,7 +317,7 @@ func SetupRoutes(r *gin.Engine) {
 func RunHttpServer(r *http.Server) {
 	zap := logs.GetLogger()
 
-	fmt.Println("Listening on port :8040")
+	fmt.Println("Listening on port " + r.Addr)
 
 	err := r.ListenAndServe()
 

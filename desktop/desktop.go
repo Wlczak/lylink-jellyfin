@@ -20,6 +20,7 @@ import (
 	"github.com/Wlczak/lylink-jellyfin/api"
 	"github.com/Wlczak/lylink-jellyfin/config"
 	"github.com/Wlczak/lylink-jellyfin/logs"
+	"github.com/Wlczak/lylink-jellyfin/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,6 +28,8 @@ var a fyne.App
 var configWindow fyne.Window
 var router *gin.Engine
 var server *http.Server
+var aboutWindow fyne.Window
+var updateButton *widget.Button
 
 func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 	router = r
@@ -41,15 +44,46 @@ func Init(icon []byte, r *gin.Engine, srv *http.Server) fyne.App {
 		showItem := fyne.NewMenuItem("Config", func() {
 			configWindow.Show()
 		})
+		aboutItem := fyne.NewMenuItem("About", func() {
+			aboutWindow = a.NewWindow("About")
+			l := container.NewVBox()
+			versionLabel := widget.NewLabel("lylink-jellyfin v0.0.1")
+
+			updateButton = widget.NewButton("Check for updates", func() {
+				updateButton.SetText("Checking...")
+				updateAvailable, newVersion, err := utils.HasUpdate()
+
+				if err != nil {
+					a.SendNotification(&fyne.Notification{Title: "Error checking for updates"})
+				}
+				if updateAvailable {
+					a.SendNotification(&fyne.Notification{Title: "New version " + newVersion + " available"})
+				}
+				updateButton.SetText("Check for updates")
+			})
+
+			l.Add(versionLabel)
+			l.Add(updateButton)
+			aboutWindow.SetContent(l)
+			aboutWindow.Show()
+		})
 		quitItem := fyne.NewMenuItem("Quit", func() {
 			a.Quit()
 		})
-		m := fyne.NewMenu("MyApp", showItem, quitItem)
+		m := fyne.NewMenu("MyApp", showItem, aboutItem, quitItem)
 		desk.SetSystemTrayMenu(m)
 		desk.SetSystemTrayIcon(a.Icon())
 	}
 
 	a.SendNotification(fyne.NewNotification("lylink-jellyfin", "LyLink is running in the background"))
+
+	updateAvailable, versionName, err := utils.HasUpdate()
+	if err != nil {
+		a.SendNotification(&fyne.Notification{Title: "Error checking for updates"})
+	}
+	if updateAvailable {
+		a.SendNotification(&fyne.Notification{Title: "New version " + versionName + " available"})
+	}
 
 	return a
 }
