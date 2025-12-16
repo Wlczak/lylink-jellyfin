@@ -11,11 +11,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
-
-            - name: Set up Go
-              uses: actions/setup-go@v6
-              with:
-                  go-version: "1.25.5"
             
             - name: Set GOCACHE and GOMODCACHE env
               run: |
@@ -30,6 +25,11 @@ jobs:
                   key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
                   restore-keys: |
                       ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
+
+            - name: Set up Go
+              uses: actions/setup-go@v6
+              with:
+                  go-version: "1.25.5"
 
             - name: Tidy modules
               run: |
