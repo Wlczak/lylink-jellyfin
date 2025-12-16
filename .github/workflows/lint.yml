@@ -16,6 +16,20 @@ jobs:
               uses: actions/setup-go@v6
               with:
                   go-version: "1.25.5"
+            
+            - name: Set GOCACHE and GOMODCACHE env
+              run: |
+                  echo "GOCACHE=$(go env GOCACHE)" >> $GITHUB_ENV
+                  echo "GOMODCACHE=$(go env GOMODCACHE)" >> $GITHUB_ENV
+            - name: Restore Go caches
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ${{ env.GOCACHE }}
+                      ${{ env.GOMODCACHE }}
+                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
+                  restore-keys: |
+                      ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
 
             - name: Tidy modules
               run: |
