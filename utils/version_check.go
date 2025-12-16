@@ -2,12 +2,9 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"runtime/debug"
 )
-
-var Version = "dev"
 
 func HasUpdate() (bool, string, error) {
 	resp, err := http.Get("https://api.github.com/repos/wlczak/lylink-jellyfin/releases/latest")
@@ -24,6 +21,5 @@ func HasUpdate() (bool, string, error) {
 	}
 	bi, _ := debug.ReadBuildInfo()
 
-	fmt.Println("Current version: ", bi.Main.Version)
-	return release.TagName != Version, release.TagName, nil
+	return release.TagName != bi.Main.Version, release.TagName, nil
 }
