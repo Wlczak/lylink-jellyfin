@@ -87,7 +87,7 @@ jobs:
                   fi
                   if [[ "${{ matrix.os }}" == "linux" ]]; then
                     # tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
-                    mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}/${{ matrix.arch }}.tar.xz
+                    mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}-${{ matrix.arch }}.tar.xz
                   fi
                   if [[ "${{ matrix.os }}" == "darwin" ]]; then
                     mkdir -p out
