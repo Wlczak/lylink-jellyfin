@@ -87,7 +87,7 @@ jobs:
                   version: "latest"
 
             - name: govulncheck
-              if: ${{ matrix.os == 'linux' }}
+              if: ${{ matrix.os == 'linux' && matrix.arch == 'amd64' }}
               uses: golang/govulncheck-action@v1
               with:
                   go-version-input: ${{ matrix.go-version }}
