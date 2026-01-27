@@ -49,7 +49,9 @@ jobs:
                   path: |
                       ${{ env.GOCACHE }}
                       ${{ env.GOMODCACHE }}
-                  key: ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
+                  key:
+                      ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-${{
+                      matrix.go-version }}
                   restore-keys: |
                       ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-
 
