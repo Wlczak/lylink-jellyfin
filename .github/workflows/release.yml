@@ -22,7 +22,7 @@ jobs:
                       os: linux
                       runs-on: ubuntu-latest
                     - go-version: "1.25.6"
-                      os: linux
+                      os: linux-arm
                       runs-on: ubuntu-24.04-arm
                     - go-version: "1.25.6"
                       os: windows
@@ -56,7 +56,7 @@ jobs:
             - name: Get fyne dependencies for linux
               run: |
                   set -e
-                  if [[ "${{ matrix.os }}" == "linux" ]]; then
+                  if [[ "${{ matrix.os }}" == "linux" || "${{ matrix.os }}" == "linux-arm" ]]; then
                     sudo apt-get update
                     sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
                   fi
@@ -81,7 +81,7 @@ jobs:
                   if [[ "${{ matrix.os }}" == "windows" ]]; then
                     mv  lylink-jellyfin.exe out/lylink-jellyfin-windows.exe
                   fi
-                  if [[ "${{ matrix.os }}" == "linux" ]]; then
+                  if [[ "${{ matrix.os }}" == "linux" || "${{ matrix.os }}" == "linux-arm" ]]; then
                     # tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
                     mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
                   fi
