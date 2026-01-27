@@ -53,7 +53,7 @@ jobs:
                       ${{ env.GOMODCACHE }}
                   key: ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
                   restore-keys: |
-                      ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
+                      ${{ runner.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-
 
             - name: Make out dir
               run: mkdir -p out
