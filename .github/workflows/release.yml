@@ -20,15 +20,19 @@ jobs:
                 include:
                     - go-version: "1.25.6"
                       os: linux
+                      arch: amd64
                       runs-on: ubuntu-latest
                     - go-version: "1.25.6"
-                      os: linux-arm
+                      os: linux
+                      arch: arm64
                       runs-on: ubuntu-24.04-arm
                     - go-version: "1.25.6"
                       os: windows
+                      arch: amd64
                       runs-on: windows-latest
                     - go-version: "1.25.6"
                       os: darwin
+                      arch: arm64
                       runs-on: macos-latest
         runs-on: ${{ matrix.runs-on }}
         steps:
@@ -47,7 +51,7 @@ jobs:
                   path: |
                       ${{ env.GOCACHE }}
                       ${{ env.GOMODCACHE }}
-                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
+                  key: ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
                   restore-keys: |
                       ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
 
@@ -56,7 +60,7 @@ jobs:
             - name: Get fyne dependencies for linux
               run: |
                   set -e
-                  if [[ "${{ matrix.os }}" == "linux" || "${{ matrix.os }}" == "linux-arm" ]]; then
+                  if [[ "${{ matrix.os }}" == "linux" ]]; then
                     sudo apt-get update
                     sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
                   fi
@@ -81,9 +85,9 @@ jobs:
                   if [[ "${{ matrix.os }}" == "windows" ]]; then
                     mv  lylink-jellyfin.exe out/lylink-jellyfin-windows.exe
                   fi
-                  if [[ "${{ matrix.os }}" == "linux" || "${{ matrix.os }}" == "linux-arm" ]]; then
+                  if [[ "${{ matrix.os }}" == "linux" ]]; then
                     # tar -czf out/myapp-${{ matrix.os }}.tar.gz -C out .
-                    mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}.tar.xz
+                    mv lylink-jellyfin.tar.xz out/lylink-jellyfin-${{ matrix.os }}/${{ matrix.arch }}.tar.xz
                   fi
                   if [[ "${{ matrix.os }}" == "darwin" ]]; then
                     mkdir -p out
