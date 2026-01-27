@@ -16,12 +16,19 @@ jobs:
                 include:
                     - go-version: "1.25.6"
                       os: linux
+                      arch: amd64
                       runs-on: ubuntu-latest
                     - go-version: "1.25.6"
+                      os: linux
+                      arch: arm64
+                      runs-on: ubuntu-24.04-arm
+                    - go-version: "1.25.6"
                       os: windows
+                      arch: amd64
                       runs-on: windows-latest
                     - go-version: "1.25.6"
                       os: darwin
+                      arch: arm64
                       runs-on: macos-latest
         runs-on: ${{ matrix.runs-on }}
         steps:
@@ -43,9 +50,9 @@ jobs:
                   path: |
                       ${{ env.GOCACHE }}
                       ${{ env.GOMODCACHE }}
-                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
+                  key: ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.go-version }}
                   restore-keys: |
-                      ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
+                      ${{ matrix.os }}/${{ matrix.arch }}-go-${{ hashFiles('**/go.sum') }}-
 
             - name: Tidy modules
               run: |
