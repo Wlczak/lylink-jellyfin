@@ -3,7 +3,7 @@ module github.com/Wlczak/lylink-jellyfin
 go 1.25.6
 
 require (
-	fyne.io/fyne/v2 v2.7.2
+	fyne.io/fyne/v2 v2.7.3
 	github.com/gin-gonic/gin v1.11.0
 	go.uber.org/zap v1.27.1
 )
@@ -29,7 +29,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.27.0 // indirect
 	github.com/go-text/render v0.2.0 // indirect
-	github.com/go-text/typesetting v0.2.1 // indirect
+	github.com/go-text/typesetting v0.3.3 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
