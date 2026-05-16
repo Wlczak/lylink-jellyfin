@@ -1,6 +1,6 @@
 module github.com/Wlczak/lylink-jellyfin
 
-go 1.26.1
+go 1.26.3
 
 require (
 	fyne.io/fyne/v2 v2.7.3
