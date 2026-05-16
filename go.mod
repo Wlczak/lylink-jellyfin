@@ -5,7 +5,7 @@ go 1.26.3
 require (
 	fyne.io/fyne/v2 v2.7.3
 	github.com/gin-gonic/gin v1.12.0
-	go.uber.org/zap v1.27.1
+	go.uber.org/zap v1.28.0
 )
 
 require (
