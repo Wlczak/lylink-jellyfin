@@ -63,7 +63,7 @@ jobs:
         if: ${{ matrix.os == 'linux' }}
         run: |
           sudo apt update
-          sudo apt-get install gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+          sudo apt-get install gcc libgl1-mesa-dev xorg-dev libwayland-dev libxkbcommon-dev
 
       - name: golangci-lint
         if: ${{ matrix.os == 'linux' }}
